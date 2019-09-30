@@ -1,4 +1,4 @@
-package spbpu.hsamcp.uniquecircle;
+package edu.amd.spbstu;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("spbpu.hsamcp.uniquecircle", appContext.getPackageName());
+        assertEquals("spbpu.hsamcp.edu.amd.spbstu.uniquecircle", appContext.getPackageName());
     }
 }

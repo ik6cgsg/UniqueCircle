@@ -1,4 +1,4 @@
-package spbpu.hsamcp.uniquecircle;
+package edu.amd.spbstu;
 
 import org.junit.Test;
 
