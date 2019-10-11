@@ -23,7 +23,7 @@ public class Transform extends Component {
         return parent;
     }
 
-    static Transform Create(GameObject parentObject) {
+    static Transform addComponent(GameObject parentObject) {
         if (parentObject == null) {
             Log.e("Transform", "null parent object");
 

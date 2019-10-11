@@ -1,6 +1,6 @@
 package edu.amd.spbstu.uniquecircle;
 
-//import android.app.Activity;
+//import android.appActive.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,19 +25,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AppIntro {
+public class AppIntro implements App {
     // CONST
-    static public final int LANGUAGE_ENG = 0;
-    static public final int LANGUAGE_RUS = 1;
-    static public final int LANGUAGE_UNKNOWN = 2;
-
-    static public final int TOUCH_DOWN = 0;
-    static public final int TOUCH_MOVE = 1;
-    static public final int TOUCH_UP = 2;
-
-    static public final int APP_ORI_LANDSCAPE = 0;
-    static public final int APP_ORI_PORTRAIT = 1;
-
     static public final int APP_STATE_START = 0;
     static public final int APP_STATE_CIRCLE_INC = 1;
     static public final int APP_STATE_APPLE_2ND_RADIUS = 2;
@@ -773,7 +762,7 @@ public class AppIntro {
             return false;
 
         if (m_rectBtnStart.contains(x, y)) {
-            m_ctx.setView(MainActivity.VIEW_GAME);
+            m_ctx.setAppActive(MainActivity.APP_GAME);
             return false;
         }
 
@@ -786,8 +775,10 @@ public class AppIntro {
             }
         }
         // check simple click => switch to next view
-        m_ctx.setView(MainActivity.VIEW_GAME);
+        m_ctx.setAppActive(MainActivity.APP_GAME);
         return true;
     }    // onTouch
+
+    public void update() {}
 }
 

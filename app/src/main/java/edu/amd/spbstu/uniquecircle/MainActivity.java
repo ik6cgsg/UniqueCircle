@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,12 +19,14 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     private ImageView splash;
-    public static final int VIEW_INTRO = 0;
-    public static final int VIEW_GAME = 1;
-    int m_viewCur = -1;
-    AppIntro m_app;
-    ViewIntro m_viewIntro;
-    //ViewGame m_viewGame;
+    public static final int APP_INTRO = 0;
+    public static final int APP_GAME = 1;
+    int appCur = -1;
+    App appActive;
+    AppIntro appIntro;
+    AppGame appGame;
+    ViewGame viewGame;
+    int language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,59 +39,43 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         // startActivityForResult(intent, 1);
         // Detect language
         String strLang = Locale.getDefault().getDisplayLanguage();
-        int language;
         if (strLang.equalsIgnoreCase("english")) {
-            language = AppIntro.LANGUAGE_ENG;
+            language = App.LANGUAGE_ENG;
         } else if (strLang.equalsIgnoreCase("русский")) {
-            language = AppIntro.LANGUAGE_RUS;
+            language = App.LANGUAGE_RUS;
         } else {
-            language = AppIntro.LANGUAGE_UNKNOWN;
+            language = App.LANGUAGE_UNKNOWN;
         }
-        m_app = new AppIntro(this, language);
-        setView(VIEW_INTRO);
+        appIntro = new AppIntro(this, language);
+        appActive = appIntro;
+        setAppActive(APP_INTRO);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent evt) {
         int x = (int) evt.getX();
         int y = (int) evt.getY();
-        int touchType = AppIntro.TOUCH_DOWN;
+        int touchType = App.TOUCH_DOWN;
 
         if (evt.getAction() == MotionEvent.ACTION_MOVE)
-            touchType = AppIntro.TOUCH_MOVE;
+            touchType = App.TOUCH_MOVE;
         if (evt.getAction() == MotionEvent.ACTION_UP)
-            touchType = AppIntro.TOUCH_UP;
+            touchType = App.TOUCH_UP;
 
-        if (m_viewCur == VIEW_INTRO)
-            return m_viewIntro.onTouch(x, y, touchType);
-        if (m_viewCur == VIEW_GAME)
-        //return m_viewGame.onTouch(x, y, touchType);
-        {
-        }
-        return true;
+        return viewGame.onTouch(x, y, touchType);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (m_viewCur == VIEW_INTRO) {
-            m_viewIntro.start();
-        }
-        if (m_viewCur == VIEW_GAME) {
-            //m_viewGame.start();
-        }
+        viewGame.start();
     }
 
     @Override
     protected void onPause()
     {
         // stop anims
-        if (m_viewCur == VIEW_INTRO) {
-            m_viewIntro.stop();
-        }
-        if (m_viewCur == VIEW_GAME) {
-            //m_viewGame.onPause();
-        }
+        viewGame.stop();
         // complete system
         super.onPause();
     }
@@ -99,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (m_viewCur == VIEW_GAME) {
-            //m_viewGame.onDestroy();
+        if (appCur == APP_GAME) {
+            // TODO viewGame.onDestroy();
             splash.setAnimation(null);
         }
     }
@@ -125,36 +109,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     }
 
-    public void setView(int viewID) {
-        if (m_viewCur == viewID) {
+    public void setAppActive(int appID) {
+        if (appCur == appID) {
             return;
         }
 
-        m_viewCur = viewID;
-        if (m_viewCur == VIEW_INTRO) {
-            m_viewIntro = new ViewIntro(this);
-            setContentView(m_viewIntro);
+        appCur = appID;
+        if (appCur == APP_INTRO) {
+            appActive = appIntro;
         }
-        if (m_viewCur == VIEW_GAME) {
-            //m_viewGame = new ViewGame(this);
-            //setContentView(m_viewGame);
-            //m_viewGame.start();
-            setContentView(R.layout.activity_main);
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            RotateAnimation anim = new RotateAnimation(0f, 360f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-            anim.setInterpolator(new LinearInterpolator());
-            anim.setRepeatCount(Animation.INFINITE);
-            anim.setDuration(2000);
-            splash = findViewById(R.id.star);
-            splash.startAnimation(anim);
+        if (appCur == APP_GAME) {
+            // TODO mainActivity = m_appGame;
         }
     }
 
-    public AppIntro getApp() {
-        return m_app;
+    public App getAppActive() {
+        return appActive;
     }
 }

@@ -1,5 +1,7 @@
 package edu.amd.spbstu.uniquecircle.engine;
 
+import android.graphics.Canvas;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class GameObject {
 
     public GameObject(String name) {
         this.name = name;
-        transform = Transform.Create(this);
+        transform = Transform.addComponent(this);
         children = new ArrayList<>();
     }
 
@@ -47,14 +49,14 @@ public class GameObject {
             entry.getValue().gameObject.update();
     }
 
-    void render() {
+    void render(Canvas canvas) {
         // render self
         for (Component component : components)
-            component.render();
+            component.render(canvas);
 
         // render children
         for (Map.Entry<String, Transform> entry : transform.children.entrySet())
-            entry.getValue().gameObject.render();
+            entry.getValue().gameObject.render(canvas);
     }
 
     public GameObject getChild(String name) {

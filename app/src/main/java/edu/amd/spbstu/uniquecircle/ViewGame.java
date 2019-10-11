@@ -7,9 +7,9 @@ import android.os.Message;
 import android.view.View;
 
 class RedrawHandler extends Handler {
-    ViewIntro m_viewm_app;
+    private ViewGame m_viewm_app;
 
-    public RedrawHandler(ViewIntro v) {
+    public RedrawHandler(ViewGame v) {
         m_viewm_app = v;
     }
 
@@ -24,25 +24,28 @@ class RedrawHandler extends Handler {
     }
 }
 
-public class ViewIntro extends View {
+public class ViewGame extends View {
     // CONST
     private static final int UPDATE_TIME_MS = 30;
 
     // DATA
-    MainActivity m_app;
+    MainActivity mainActivity;
     RedrawHandler handler;
     long startTime;
-    int lineLen;
+    long curTime;
+    private long prevTime;
+    long deltaTimeMs;
+    float deltaTime;
+
     boolean active;
 
     // METHODS
-    public ViewIntro(MainActivity app) {
+    public ViewGame(MainActivity app) {
         super(app);
-        m_app = app;
+        mainActivity = app;
 
         handler = new RedrawHandler(this);
         startTime = 0;
-        lineLen = 0;
         active = false;
         setOnTouchListener(app);
     }
@@ -66,25 +69,31 @@ public class ViewIntro extends View {
         if (!active)
             return;
         // send next update to game
-        if (active)
+        if (active) {
+            mainActivity.getAppActive().update();
             handler.sleep(UPDATE_TIME_MS);
+        }
     }
 
     public boolean onTouch(int x, int y, int evtType) {
-        AppIntro app = m_app.getApp();
+        App app = mainActivity.getAppActive();
         return app.onTouch(x, y, evtType);
     }
 
     public void onConfigurationChanged(Configuration confNew) {
-        AppIntro app = m_app.getApp();
+        App app = mainActivity.getAppActive();
         if (confNew.orientation == Configuration.ORIENTATION_LANDSCAPE)
-            app.onOrientation(AppIntro.APP_ORI_LANDSCAPE);
+            app.onOrientation(App.APP_ORI_LANDSCAPE);
         if (confNew.orientation == Configuration.ORIENTATION_PORTRAIT)
-            app.onOrientation(AppIntro.APP_ORI_PORTRAIT);
+            app.onOrientation(App.APP_ORI_PORTRAIT);
     }
 
     public void onDraw(Canvas canvas) {
-        AppIntro app = m_app.getApp();
+        App app = mainActivity.getAppActive();
+        prevTime = curTime;
+        curTime = System.currentTimeMillis();
+        deltaTimeMs = curTime - prevTime;
+        deltaTime = deltaTimeMs / 1000.0f;
         app.drawCanvas(canvas);
     }
 }

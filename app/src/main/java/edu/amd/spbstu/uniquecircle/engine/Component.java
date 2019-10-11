@@ -1,5 +1,7 @@
 package edu.amd.spbstu.uniquecircle.engine;
 
+import android.graphics.Canvas;
+
 public abstract class Component {
     GameObject gameObject;
 
@@ -13,7 +15,7 @@ public abstract class Component {
     }
 
     protected void update() {}
-    protected void render() {}
+    protected void render(Canvas canvas) {}
 
     public void remove() {
         gameObject.components.remove(this);
