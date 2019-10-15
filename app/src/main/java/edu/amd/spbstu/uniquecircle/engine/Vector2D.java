@@ -30,6 +30,11 @@ public class Vector2D {
         y = 0;
     }
 
+    public void setOnes() {
+        x = 1;
+        y = 1;
+    }
+
     public double[] getComponents() {
         return new double[]{x, y};
     }
@@ -126,8 +131,17 @@ public class Vector2D {
         y *= scalar;
     }
 
+    public void multiply(Vector2D vector) {
+        x *= vector.x;
+        y *= vector.y;
+    }
+
     public Vector2D getMultiplied(double scalar) {
         return new Vector2D(x * scalar, y * scalar);
+    }
+
+    public Vector2D getMultiplied(Vector2D vector) {
+        return new Vector2D(x * vector.x, y * vector.y);
     }
 
     public void divide(double scalar) {

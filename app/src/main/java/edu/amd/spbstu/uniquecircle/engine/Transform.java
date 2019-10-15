@@ -5,16 +5,15 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Transform extends Component {
-    private float localScale;
+    private Vector2D localPosition;
+    private Vector2D globalPosition;
+
+    private Vector2D localScale;
+    private Vector2D globalScale;
+
     private float localRotation;
-    //private vector localPosition;
-
-    private float globalScale;
     private float globalRotation;
-    //private vector localPosition;
-
 
     private Transform parent;
     Map<String, Transform> children;
@@ -33,22 +32,35 @@ public class Transform extends Component {
         return new Transform(parentObject);
     }
 
-    private Transform(GameObject parentObject) {
-        super(parentObject);
-        localScale = 1;
+    private Transform(GameObject gameObject) {
+        super(gameObject);
+
+        // find parent transform
+        if (gameObject.getParent() != null)
+            parent = gameObject.getParent().getTransform();
+
+        // init transform components
+        localScale = new Vector2D();
+        localScale.setOnes();
+        globalScale = new Vector2D();
+        globalScale.setOnes();
+
+        localPosition = new Vector2D();
+        globalPosition = new Vector2D();
+
         children = new HashMap<>();
     }
 
     private void updateGlobalTransform() {
         if (parent != null) {
-            globalScale = parent.globalScale * localScale;
+            globalPosition = parent.globalPosition.getAdded(localPosition);
+            globalScale = parent.globalScale.getMultiplied(localScale);
             globalRotation = parent.globalRotation + localRotation;
-            //globalPosition = parent.globalPosition + localPosition;
         }
         else {
-            globalScale = localScale;
+            globalPosition.set(localPosition);
+            globalScale.set(localScale);
             globalRotation = localRotation;
-            //globalPosition = localPosition;
         }
 
         for (Map.Entry<String, Transform> entry : children.entrySet())
@@ -61,18 +73,18 @@ public class Transform extends Component {
         child.updateGlobalTransform();
     }
 
-    //public void setTransform(vector position, float scale, float rotation) {
-    //    localScale = scale;
-    //    localRotation = rotation;
-    //    localPosition = position.copy();
-    //    updateGlobalTransform();
-    // }
-    //public void setPosition(vector position) {
-    //    localPosition = position.copy();
-    //    updateGlobalTransform();
-    //}
-    public void setScale(float scale) {
-        localScale = scale;
+    public void setTransform(Vector2D position, Vector2D scale, float rotation) {
+        localPosition.set(position);
+        localScale.set(scale);
+        localRotation = rotation;
+        updateGlobalTransform();
+     }
+    public void setPosition(Vector2D position) {
+        localPosition.set(position);
+        updateGlobalTransform();
+    }
+    public void setScale(Vector2D scale) {
+        localScale.set(scale);
         updateGlobalTransform();
     }
     public void setRotation(float rotation) {
@@ -80,21 +92,21 @@ public class Transform extends Component {
         updateGlobalTransform();
     }
 
-    //public vector getLocalPosition() {
-    //  return localPosition;
-    // }
-    public float getLocalScale() {
-        return localScale;
+    public Vector2D getLocalPosition() {
+      return localPosition.clone();
+    }
+    public Vector2D getLocalScale() {
+        return localScale.clone();
     }
     public float getLocalRotation() {
         return localRotation;
     }
 
-    //public vector getGlobalPosition() {
-    //  return globalPosition;
-    // }
-    public float getGlobalScale() {
-        return globalScale;
+    public Vector2D getGlobalPosition() {
+        return globalPosition.clone();
+    }
+    public Vector2D getGlobalScale() {
+        return globalScale.clone();
     }
     public float getGlobalRotation() {
         return globalRotation;

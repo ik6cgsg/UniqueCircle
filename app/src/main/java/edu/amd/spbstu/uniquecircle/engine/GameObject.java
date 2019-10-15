@@ -20,7 +20,9 @@ public class GameObject {
     }
 
     public GameObject getParent() {
-        return transform.getParent().gameObject;
+        if (transform.getParent() != null)
+            return transform.getParent().gameObject;
+        return null;
     }
 
     public List<GameObject> getChildren() {
