@@ -17,9 +17,11 @@ public class AppGame implements App {
         this.language = language;
         scene = new Scene();
 
-        scene.addGameObject(new GameObject("parent"));
-        scene.getGameObject("parent").addChild(new GameObject("child"));
-        Renderer.addComponent(scene.getGameObject("parent"));
+        GameObject parent = new GameObject("parent");
+        scene.addGameObject(parent);
+        parent.addChild(new GameObject("child"));
+        Renderer.addComponent(parent);
+        TestAnimation.addComponent(parent);
     }
 
     public int getLanguage() {

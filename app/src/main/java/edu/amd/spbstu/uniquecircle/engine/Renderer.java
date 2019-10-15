@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
+import edu.amd.spbstu.uniquecircle.support.Vector2D;
+
 public class Renderer extends Component {
     Paint paint;
 
@@ -13,18 +15,20 @@ public class Renderer extends Component {
         paint.setColor(0xFFFF0000);
     }
 
-    static public Renderer addComponent(GameObject parentObject) {
-        if (parentObject == null) {
-            Log.e("Render", "null parent object");
+    static public Renderer addComponent(GameObject gameObject) {
+        if (gameObject == null) {
+            Log.e("Render", "null game object");
 
             return null;
         }
 
-        return new Renderer(parentObject);
+        return new Renderer(gameObject);
     }
 
     @Override
     protected void render(Canvas canvas) {
-        canvas.drawCircle(69, 69, 30, paint);
+        Vector2D pos = gameObject.getTransform().getGlobalPosition();
+        Vector2D scale = gameObject.getTransform().getGlobalScale();
+        canvas.drawCircle(pos.x, pos.y, scale.x * 69, paint);
     }
 }

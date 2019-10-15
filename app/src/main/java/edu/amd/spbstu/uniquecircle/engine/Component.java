@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 public abstract class Component {
     GameObject gameObject;
 
-    public GameObject getGameObject() {
+    public final GameObject getGameObject() {
         return gameObject;
     }
 

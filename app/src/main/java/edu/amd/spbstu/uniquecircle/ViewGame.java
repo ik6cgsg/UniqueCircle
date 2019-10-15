@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 
+import edu.amd.spbstu.uniquecircle.engine.Component;
+
 class RedrawHandler extends Handler {
     private ViewGame m_viewm_app;
 
@@ -29,13 +31,13 @@ public class ViewGame extends View {
     private static final int UPDATE_TIME_MS = 30;
 
     // DATA
-    MainActivity mainActivity;
-    RedrawHandler handler;
-    long startTime;
-    long curTime;
-    private long prevTime;
-    long deltaTimeMs;
-    float deltaTime;
+    private MainActivity mainActivity;
+    private RedrawHandler handler;
+    private static long startTime;
+    private static long curTime;
+    private static long prevTime;
+    private static long deltaTimeMs;
+    private static float deltaTime;
 
     boolean active;
 
@@ -95,5 +97,21 @@ public class ViewGame extends View {
         deltaTimeMs = curTime - prevTime;
         deltaTime = deltaTimeMs / 1000.0f;
         app.drawCanvas(canvas);
+    }
+
+    public static long getStartTime() {
+        return startTime;
+    }
+
+    public static long getCurTime() {
+        return curTime;
+    }
+
+    public static long getDeltaTimeMs() {
+        return deltaTimeMs;
+    }
+
+    public static float getDeltaTime() {
+        return deltaTime;
     }
 }

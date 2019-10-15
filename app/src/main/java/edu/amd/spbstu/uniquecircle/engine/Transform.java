@@ -5,6 +5,8 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.amd.spbstu.uniquecircle.support.Vector2D;
+
 public class Transform extends Component {
     private Vector2D localPosition;
     private Vector2D globalPosition;
@@ -22,22 +24,18 @@ public class Transform extends Component {
         return parent;
     }
 
-    static Transform addComponent(GameObject parentObject) {
-        if (parentObject == null) {
-            Log.e("Transform", "null parent object");
+    static Transform addComponent(GameObject gameObject) {
+        if (gameObject == null) {
+            Log.e("Transform", "null game object");
 
             return null;
         }
 
-        return new Transform(parentObject);
+        return new Transform(gameObject);
     }
 
     private Transform(GameObject gameObject) {
         super(gameObject);
-
-        // find parent transform
-        if (gameObject.getParent() != null)
-            parent = gameObject.getParent().getTransform();
 
         // init transform components
         localScale = new Vector2D();
