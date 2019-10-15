@@ -47,8 +47,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             language = App.LANGUAGE_UNKNOWN;
         }
         appIntro = new AppIntro(this, language);
+        appGame = new AppGame(this, language);
         appActive = appIntro;
         setAppActive(APP_INTRO);
+        viewGame = new ViewGame(this);
+        setContentView(viewGame);
     }
 
     @Override
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             appActive = appIntro;
         }
         if (appCur == APP_GAME) {
-            // TODO mainActivity = m_appGame;
+            appActive = appGame;
         }
     }
 

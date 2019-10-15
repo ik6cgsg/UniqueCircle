@@ -14,8 +14,9 @@ public class GameObject {
 
     public GameObject(String name) {
         this.name = name;
-        transform = Transform.addComponent(this);
         children = new ArrayList<>();
+        components = new ArrayList<>();
+        transform = Transform.addComponent(this);
     }
 
     public GameObject getParent() {
@@ -62,7 +63,7 @@ public class GameObject {
     public GameObject getChild(String name) {
         Transform tmp;
         if ((tmp = transform.children.get(name)) != null)
-                return tmp.gameObject;
+            return tmp.gameObject;
 
         GameObject output;
         for (Map.Entry<String, Transform> entry : transform.children.entrySet())
