@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
         if (appCur == APP_GAME) {
             appActive = appGame;
+            appGame.init();
         }
     }
 

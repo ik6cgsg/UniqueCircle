@@ -11,7 +11,7 @@ public abstract class Animation extends Component {
     private long startTimeMs;
     private float t;
     private Event endEvent;
-    boolean isLooping;
+    private boolean isLooping;
 
     protected Animation(GameObject gameObject, float lifeTime, boolean isLooping) {
         super(gameObject);

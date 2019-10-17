@@ -12,9 +12,7 @@ public class AppGame implements App {
 
     private Scene scene;
 
-    public AppGame(MainActivity mainActivity, int language) {
-        this.mainActivity = mainActivity;
-        this.language = language;
+    public void init() {
         scene = new Scene();
 
         GameObject parent = new GameObject("parent");
@@ -22,6 +20,11 @@ public class AppGame implements App {
         parent.addChild(new GameObject("child"));
         Renderer.addComponent(parent);
         TestAnimation.addComponent(parent);
+    }
+
+    public AppGame(MainActivity mainActivity, int language) {
+        this.mainActivity = mainActivity;
+        this.language = language;
     }
 
     public int getLanguage() {
