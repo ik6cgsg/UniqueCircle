@@ -3,8 +3,8 @@ package edu.amd.spbstu.uniquecircle.engine;
 import java.util.List;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
-import edu.amd.spbstu.uniquecircle.support.Event;
-import edu.amd.spbstu.uniquecircle.support.EventListener;
+import edu.amd.spbstu.uniquecircle.support.event.Event;
+import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
 public abstract class Animation extends Component {
     private long lifeTimeMs;

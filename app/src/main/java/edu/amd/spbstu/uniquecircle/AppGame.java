@@ -3,6 +3,7 @@ package edu.amd.spbstu.uniquecircle;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import edu.amd.spbstu.uniquecircle.engine.CircleCollider;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.Scene;
@@ -16,11 +17,16 @@ public class AppGame implements App {
     public void init() {
         scene = new Scene();
 
-        GameObject parent = new GameObject("parent");
-        scene.addGameObject(parent);
-        parent.addChild(new GameObject("child"));
+        GameObject parent = GameObject.addToScene("parent", scene);
+        GameObject child = GameObject.addChild("child", parent);
+
         BitmapRenderer.addComponent(parent, "circle", Color.RED);
-        TestAnimation.addComponent(parent);
+        TestAnimation.addComponent(parent, 1);
+        CircleCollider.addComponent(parent, 128);
+
+        BitmapRenderer.addComponent(child, "circle", Color.GREEN);
+        TestAnimation.addComponent(child, 1);
+        CircleCollider.addComponent(child, 128);
     }
 
     public AppGame(MainActivity mainActivity, int language) {
@@ -44,7 +50,7 @@ public class AppGame implements App {
 
     @Override
     public boolean onTouch(int x, int y, int eventType) {
-        if (eventType == TOUCH_UP)
+        if (eventType == TOUCH_DOWN)
             return scene.onTouch(x, y);
         return false;
     }
