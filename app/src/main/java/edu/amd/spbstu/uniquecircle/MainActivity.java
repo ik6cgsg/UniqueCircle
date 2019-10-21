@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         setAppActive(APP_INTRO);
         viewGame = new ViewGame(this);
         setContentView(viewGame);
+        setAppActive(APP_GAME);
     }
 
     @Override

@@ -38,8 +38,8 @@ public class TestAnimation extends Animation {
     protected void animationUpdate(float t) {
         pos.set(150 + 100 * (float)Math.cos(t * Math.PI * 2),
                 150 + 100 * (float)Math.sin(t * Math.PI * 2));
-        scale.set(2 + (float)Math.cos(t * Math.PI * 4),
-                  2 + (float)Math.cos(t * Math.PI * 4));
+        scale.set(0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f,
+                  0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f);
         transform.setPosition(pos);
         transform.setScale(scale);
     }

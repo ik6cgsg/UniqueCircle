@@ -1,9 +1,10 @@
 package edu.amd.spbstu.uniquecircle;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
-import edu.amd.spbstu.uniquecircle.engine.Renderer;
+import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.Scene;
 
 public class AppGame implements App {
@@ -18,7 +19,7 @@ public class AppGame implements App {
         GameObject parent = new GameObject("parent");
         scene.addGameObject(parent);
         parent.addChild(new GameObject("child"));
-        Renderer.addComponent(parent);
+        BitmapRenderer.addComponent(parent, "circle", Color.RED);
         TestAnimation.addComponent(parent);
     }
 

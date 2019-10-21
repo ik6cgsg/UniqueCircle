@@ -31,7 +31,7 @@ public class ViewGame extends View {
     private static final int UPDATE_TIME_MS = 30;
 
     // DATA
-    private MainActivity mainActivity;
+    private static MainActivity mainActivity;
     private RedrawHandler handler;
     private static long startTime;
     private static long curTime;
@@ -47,7 +47,9 @@ public class ViewGame extends View {
         mainActivity = app;
 
         handler = new RedrawHandler(this);
-        startTime = 0;
+        startTime = System.currentTimeMillis();
+        curTime = startTime;
+        prevTime = startTime;
         active = false;
         setOnTouchListener(app);
     }
@@ -113,5 +115,9 @@ public class ViewGame extends View {
 
     public static float getDeltaTime() {
         return deltaTime;
+    }
+
+    public static MainActivity getMainActivity() {
+        return mainActivity;
     }
 }
