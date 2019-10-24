@@ -7,6 +7,7 @@ import edu.amd.spbstu.uniquecircle.engine.Animation;
 import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.OnTouchEventListener;
+import edu.amd.spbstu.uniquecircle.engine.Renderer;
 import edu.amd.spbstu.uniquecircle.engine.Transform;
 import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
@@ -47,13 +48,13 @@ public class TestAnimation extends Animation implements OnTouchEventListener {
 //        scale.set(0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f,
 //                  0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f);
 //        scale.multiply(factor);
-//        transform.setPosition(pos);
-//        transform.setScale(scale);
+//        transform.setLocalPosition(pos);
+//        transform.setLocalScale(scale);
     }
 
     @Override
     public void onTouchEvent(float x, float y) {
         Log.d("TestAnimation", "on touch event");
-        getGameObject().getComponent(BitmapRenderer.class).setColor(Color.BLACK);
+        getGameObject().getComponent(Renderer.class).setColor(Color.BLACK);
     }
 }

@@ -71,22 +71,22 @@ public class Transform extends Component {
         child.updateGlobalTransform();
     }
 
-    public void setTransform(Vector2D position, Vector2D scale, float rotation) {
-        localPosition.set(position);
-        localScale.set(scale);
-        localRotation = rotation;
+    public void setTransform(Vector2D localPosition, Vector2D localScale, float localRotation) {
+        this.localPosition.set(localPosition);
+        this.localScale.set(localScale);
+        this.localRotation = localRotation;
         updateGlobalTransform();
      }
-    public void setPosition(Vector2D position) {
-        localPosition.set(position);
+    public void setLocalPosition(Vector2D localPosition) {
+        this.localPosition.set(localPosition);
         updateGlobalTransform();
     }
-    public void setScale(Vector2D scale) {
-        localScale.set(scale);
+    public void setLocalScale(Vector2D localScale) {
+        this.localScale.set(localScale);
         updateGlobalTransform();
     }
-    public void setRotation(float rotation) {
-        localRotation = rotation;
+    public void setLocalRotation(float localRotation) {
+        this.localRotation = localRotation;
         updateGlobalTransform();
     }
 

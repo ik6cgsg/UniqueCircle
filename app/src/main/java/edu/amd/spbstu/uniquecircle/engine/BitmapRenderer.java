@@ -15,29 +15,16 @@ import android.util.Log;
 import edu.amd.spbstu.uniquecircle.ViewGame;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
-public class BitmapRenderer extends Component {
-    private Paint paint;
+public class BitmapRenderer extends Renderer {
     private Bitmap bitmap;
-    private Transform transform;
-    private Activity mainActivity;
 
     private BitmapRenderer(GameObject gameObject, int bitmapId, int color) {
         super(gameObject);
 
-        paint = new Paint();
-        paint.setColor(0xFFFFFFFF);
         setColor(color);
 
-        mainActivity = ViewGame.getMainActivity();
-        Resources res = mainActivity.getResources();
+        Resources res = ViewGame.getMainActivity().getResources();
         bitmap = BitmapFactory.decodeResource(res, bitmapId);
-
-        transform = gameObject.getTransform();
-    }
-
-    public void setColor(int color) {
-        ColorFilter filter = new LightingColorFilter(color, 0);
-        paint.setColorFilter(filter);
     }
 
     static public BitmapRenderer addComponent(GameObject gameObject, String bitmapName) {

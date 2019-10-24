@@ -1,13 +1,25 @@
 package edu.amd.spbstu.uniquecircle.engine;
 
+import android.util.Log;
+
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
 public class RectangularCollider extends Collider {
     public float width;
     public float height;
 
-    private RectangularCollider(GameObject gameObject,
-                                float width, float height) {
+    public static RectangularCollider addComponent(GameObject gameObject,
+                                                   float width, float height) {
+        if (gameObject == null) {
+            Log.e("RectangularCollider", "null game object");
+
+            return null;
+        }
+
+        return new RectangularCollider(gameObject, width, height);
+    }
+
+    private RectangularCollider(GameObject gameObject, float width, float height) {
         super(gameObject);
 
         this.width = width;
