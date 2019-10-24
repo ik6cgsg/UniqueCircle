@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
 import edu.amd.spbstu.uniquecircle.engine.Component;
@@ -14,12 +15,47 @@ import edu.amd.spbstu.uniquecircle.support.Vector2D;
 import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
 public class LevelManager extends Component {
-    private int levelNumber = 1;
-    private List<FigureCircle> sideCircles = new ArrayList<>();
-    private FigureCircle centerCircle;
     private static final String TAG = "LevelManager";
     private static final float CIRCLE_SCALE = 0.69f;
     private static final int CIRCLE_NUMBER = 6;
+
+    private int levelNumber = 1;
+    private List<FigureCircle> sideCircles = new ArrayList<>();
+    private FigureCircle centerCircle;
+    private Random random = new Random();
+
+    class GoodClickListener implements EventListener {
+        private static final float TRANSLATE_TIME = 0.30f;
+        private GameObject translatedObject;
+
+        public void setTranslatedObject(GameObject translatedObject) {
+            this.translatedObject = translatedObject;
+        }
+
+        @Override
+        public void onEvent() {
+            // start translation animation and set up next level listener
+            TranslateAnimation.addComponent(translatedObject, new Vector2D(),
+                    TRANSLATE_TIME).getEndEvent().addListener(nextLevelListener);
+        }
+    }
+
+    private GoodClickListener goodClickListener = new GoodClickListener();
+    private EventListener badClickListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            // reset to level 1
+            levelNumber = 1;
+            initLevel();
+        }
+    };
+
+    private EventListener nextLevelListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            nextLevel();
+        }
+    };
 
     private enum DistinctFeature {
         COLOR, SHAPE
@@ -65,7 +101,19 @@ public class LevelManager extends Component {
         return levelManager;
     }
 
+    private void removeClickables() {
+        for (FigureCircle circle : sideCircles) {
+            Clickable clickable = circle.getCircleObject().getComponent(Clickable.class);
+            if (clickable != null)
+                clickable.remove();
+        }
+    }
+
     private void initLevel() {
+        // update level number in the center
+        ((TextRenderer)centerCircle.getFigureRenderer()).setText(String.valueOf(levelNumber));
+
+        // set level scale
         centerCircle.getCircleObject().getTransform().setLocalScale(CIRCLE_SCALE);
 
         // set positions
@@ -80,45 +128,32 @@ public class LevelManager extends Component {
             shift.rotateBy(delta);
         }
 
-        // update level number
-        ((TextRenderer)centerCircle.getFigureRenderer()).setText(String.valueOf(levelNumber));
-
         // determine distinct feature
-
-
+        // TODO
 
         // determine correct answer
+        int correct_i = Math.abs(random.nextInt()) % CIRCLE_NUMBER;
 
         // set up click event
-        for (final FigureCircle circle : sideCircles) {
-            Clickable clickable = Clickable.addComponent(circle.getCircleObject(), true);
-            final float SUCK_TIME = 0.30f;
-
-            EventListener suckListener = new EventListener() {
+        for (int i = 0; i < CIRCLE_NUMBER; i++) {
+            FigureCircle sideCircle = sideCircles.get(i);
+            Clickable clickable = Clickable.addComponent(sideCircle.getCircleObject(), true);
+            clickable.getOnClickEvent().addListener(new EventListener() {
                 @Override
                 public void onEvent() {
-                    // remove all clickables
-                    for (FigureCircle circle : sideCircles) {
-                        Clickable clickable = circle.getCircleObject().getComponent(Clickable.class);
-                        if (clickable != null)
-                            clickable.remove();
-                    }
-
-                    // start translation animation
-                    TranslateAnimation anim = TranslateAnimation.addComponent(circle.getCircleObject(),
-                            new Vector2D(), SUCK_TIME);
-
-                    // next level after translation animation
-                    anim.getEndEvent().addListener(new EventListener() {
-                        @Override
-                        public void onEvent() {
-                            nextLevel();
-                        }
-                    });
+                    removeClickables();
                 }
-            };
+            });
+            if (i == correct_i) {
+                goodClickListener.setTranslatedObject(sideCircle.getCircleObject());
+                clickable.getOnClickEvent().addListener(goodClickListener);
+                sideCircles.get(i).getFigureRenderer().setColor(Color.GREEN);
+            }
+            else {
+                clickable.getOnClickEvent().addListener(badClickListener);
+                sideCircles.get(i).getFigureRenderer().setColor(Color.WHITE);
+            }
 
-            clickable.getOnClickEvent().addListener(suckListener);
         }
 
 

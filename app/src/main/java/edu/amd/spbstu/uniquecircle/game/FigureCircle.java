@@ -3,6 +3,7 @@ package edu.amd.spbstu.uniquecircle.game;
 import android.graphics.Color;
 import android.util.Log;
 
+import edu.amd.spbstu.uniquecircle.ViewGame;
 import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.CircleCollider;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
@@ -10,7 +11,7 @@ import edu.amd.spbstu.uniquecircle.engine.Renderer;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
 
 public class FigureCircle {
-    private static final float DIAMETER = 336;
+    private static final float DIAMETER = ViewGame.dp2Px(128);
     private static final String TAG = "FigureCircle";
 
     private GameObject circle;

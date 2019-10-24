@@ -42,6 +42,7 @@ public class ViewGame extends View {
 
     private static int screenWidth;
     private static int screenHeight;
+    private static int dpi;
 
     boolean active;
 
@@ -61,6 +62,7 @@ public class ViewGame extends View {
         mainActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenHeight = displayMetrics.heightPixels;
         screenWidth = displayMetrics.widthPixels;
+        dpi = displayMetrics.densityDpi;
     }
 
     public boolean performClick() {
@@ -136,5 +138,13 @@ public class ViewGame extends View {
 
     public static int getScreenHeight() {
         return screenHeight;
+    }
+
+    public static int getDpi() {
+        return dpi;
+    }
+
+    public static int dp2Px(int dp) {
+        return (int)(dp * (dpi / 160.0f));
     }
 }
