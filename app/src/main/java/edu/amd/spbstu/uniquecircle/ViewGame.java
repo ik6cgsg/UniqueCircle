@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import edu.amd.spbstu.uniquecircle.engine.Component;
@@ -39,6 +40,9 @@ public class ViewGame extends View {
     private static long deltaTimeMs;
     private static float deltaTime;
 
+    private static int screenWidth;
+    private static int screenHeight;
+
     boolean active;
 
     // METHODS
@@ -52,6 +56,11 @@ public class ViewGame extends View {
         prevTime = startTime;
         active = false;
         setOnTouchListener(app);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        mainActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        screenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
     }
 
     public boolean performClick() {
@@ -119,5 +128,13 @@ public class ViewGame extends View {
 
     public static MainActivity getMainActivity() {
         return mainActivity;
+    }
+
+    public static int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public static int getScreenHeight() {
+        return screenHeight;
     }
 }

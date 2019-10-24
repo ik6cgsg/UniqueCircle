@@ -51,7 +51,7 @@ public class Transform extends Component {
 
     private void updateGlobalTransform() {
         if (parent != null) {
-            globalPosition = parent.globalPosition.getAdded(localPosition);
+            globalPosition = parent.globalPosition.getAdded(localPosition.getMultiplied(parent.globalScale));
             globalScale = parent.globalScale.getMultiplied(localScale);
             globalRotation = parent.globalRotation + localRotation;
         }
@@ -83,6 +83,10 @@ public class Transform extends Component {
     }
     public void setLocalScale(Vector2D localScale) {
         this.localScale.set(localScale);
+        updateGlobalTransform();
+    }
+    public void setLocalScale(float localScale) {
+        this.localScale.set(localScale, localScale);
         updateGlobalTransform();
     }
     public void setLocalRotation(float localRotation) {

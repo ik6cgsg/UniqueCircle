@@ -6,10 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.util.Log;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
@@ -17,14 +14,31 @@ import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
 public class BitmapRenderer extends Renderer {
     private Bitmap bitmap;
+    private Activity mainActivity;
+    private Matrix m = new Matrix();
 
     private BitmapRenderer(GameObject gameObject, int bitmapId, int color) {
         super(gameObject);
 
         setColor(color);
 
-        Resources res = ViewGame.getMainActivity().getResources();
+        mainActivity = ViewGame.getMainActivity();
+        Resources res = mainActivity.getResources();
         bitmap = BitmapFactory.decodeResource(res, bitmapId);
+    }
+
+    public void setBitmap(String bitmapName) {
+        int id = mainActivity.getResources().getIdentifier(bitmapName,
+                "drawable", mainActivity.getPackageName());
+
+        if (id == 0) {
+            Log.e("BitmapRenderer", "bitmap doesn't exist");
+
+            return;
+        }
+
+        Resources res = mainActivity.getResources();
+        bitmap = BitmapFactory.decodeResource(res, id);
     }
 
     static public BitmapRenderer addComponent(GameObject gameObject, String bitmapName) {
@@ -56,7 +70,6 @@ public class BitmapRenderer extends Renderer {
         Vector2D pos = transform.getGlobalPosition();
         Vector2D scale = transform.getGlobalScale();
 
-        Matrix m = new Matrix();
         m.setTranslate(-bitmap.getWidth() / 2.0f, -bitmap.getHeight() / 2.0f);
         m.postScale(scale.x, scale.y);
         m.postRotate(gameObject.getTransform().getGlobalRotation());

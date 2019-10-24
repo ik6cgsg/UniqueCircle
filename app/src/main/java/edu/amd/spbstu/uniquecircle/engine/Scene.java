@@ -1,6 +1,7 @@
 package edu.amd.spbstu.uniquecircle.engine;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,18 @@ public class Scene {
     public Scene() {
         rootObject = new GameObject("", this);
     }
+
+    public GameObject addGameObject(String name) {
+        if (name == null) {
+            Log.e("Scene", "null name");
+            return null;
+        }
+
+        GameObject output = new GameObject(name, this);
+        rootObject.addChild(output);
+        return output;
+    }
+
 
     public void update() {
         rootObject.update();
@@ -55,10 +68,6 @@ public class Scene {
         onTouchEvent.fireOnTouchEvent(collidedObjects, x, y);
 
         return true;
-    }
-
-    void addGameObject(GameObject gameObject) {
-        rootObject.addChild(gameObject);
     }
 
     public GameObject getGameObject(String name) {

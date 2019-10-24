@@ -15,22 +15,6 @@ public class GameObject {
     private List<GameObject> children;
     private Scene scene;
 
-    public static GameObject addToScene(String name, Scene scene) {
-        if (name == null) {
-            Log.e("GameObject", "null name");
-            return null;
-        }
-
-        if (scene == null) {
-            Log.e("GameObject", "null scene");
-            return null;
-        }
-
-        GameObject output = new GameObject(name, scene);
-        scene.addGameObject(output);
-        return output;
-    }
-
     GameObject(String name, Scene scene) {
         this.name = name;
         this.scene = scene;
