@@ -43,6 +43,7 @@ public class LevelManager extends Component {
             return null;
         }
         centerCircle.setTextFigureRenderer(String.valueOf(0), Color.WHITE);
+        centerCircle.getCircle().getComponent(Clickable.class).remove();
 
         // create side circles
         List<FigureCircle> sideCircles = new ArrayList<>();

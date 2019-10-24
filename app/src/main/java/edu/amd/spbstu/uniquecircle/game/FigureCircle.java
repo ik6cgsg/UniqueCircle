@@ -18,7 +18,6 @@ public class FigureCircle {
     private GameObject figureContainer;
     private GameObject figure;
     private Renderer figureRenderer;
-    private int color;
     private static final float FIGURE_SCALE = 0.59f;
 
     private FigureCircle(GameObject circle, Renderer circleRenderer,
@@ -37,6 +36,7 @@ public class FigureCircle {
 
         GameObject circle = parent.addChild(name);
         CircleCollider.addComponent(circle, DIAMETER);
+        Clickable.addComponent(circle);
         Renderer circleRenderer = BitmapRenderer.addComponent(circle, "circle", color);
 
         GameObject figureContainer = circle.addChild("figureContainer");

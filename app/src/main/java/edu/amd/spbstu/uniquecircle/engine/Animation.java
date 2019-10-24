@@ -13,12 +13,18 @@ public abstract class Animation extends Component {
     private Event endEvent;
     private boolean isLooping;
 
+    protected Renderer renderer;
+    protected Transform transform;
+
     protected Animation(GameObject gameObject, float lifeTime, boolean isLooping) {
         super(gameObject);
         startTimeMs = ViewGame.getCurTime();
         this.lifeTimeMs = (long)(1000 * lifeTime);
         this.isLooping = isLooping;
         endEvent = new Event();
+
+        transform = getGameObject().getTransform();
+        renderer = getGameObject().getComponent(Renderer.class);
     }
 
     public final void addListener(EventListener newListener) {

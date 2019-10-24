@@ -57,4 +57,10 @@ public class TestAnimation extends Animation implements OnTouchEventListener {
         Log.d("TestAnimation", "on touch event");
         getGameObject().getComponent(Renderer.class).setColor(Color.BLACK);
     }
+
+    @Override
+    public void remove() {
+        getGameObject().getScene().getOnTouchEvent().removeListener(this);
+        super.remove();
+    }
 }
