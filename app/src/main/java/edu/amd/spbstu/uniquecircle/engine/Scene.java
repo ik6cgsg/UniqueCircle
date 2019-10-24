@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.amd.spbstu.uniquecircle.support.Vector2D;
+
 public class Scene {
     private GameObject rootObject;
     List<Collider> physicsScene = new LinkedList<>();
@@ -26,10 +28,11 @@ public class Scene {
 
     public List<GameObject> raycast(int x, int y) {
         List<GameObject> output = new LinkedList<>();
+        Vector2D point = new Vector2D(x, y);
 
         // find all collided objects
         for (Collider collider : physicsScene)
-            if (collider.checkCollision(x, y)) {
+            if (collider.checkCollision(point)) {
                 output.add(collider.gameObject);
 
                 // add parent objects as collided

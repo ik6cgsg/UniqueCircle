@@ -39,44 +39,39 @@ public class GameObject {
         transform = Transform.addComponent(this);
     }
 
-    public GameObject getParent() {
+     public GameObject getParent() {
         if (transform.getParent() != null)
             return transform.getParent().gameObject;
         return null;
     }
 
-    public List<GameObject> getChildren() {
+     public List<GameObject> getChildren() {
         return children;
     }
 
-    public String getName() {
+     public String getName() {
         return name;
     }
 
-    public Transform getTransform() {
+     public Transform getTransform() {
         return transform;
     }
 
-    public static GameObject addChild(String name, GameObject parent) {
-        if (parent == null) {
-            Log.e("GameObject", "null parent object");
-            return null;
-        }
-
+     public GameObject addChild(String name) {
         if (name == null) {
             Log.e("GameObject", "null name");
             return null;
         }
 
-        GameObject child = new GameObject(name, parent.scene);
+        GameObject child = new GameObject(name, scene);
 
-        parent.children.add(child);
-        parent.transform.addChild(child.name, child.transform);
+        children.add(child);
+        transform.addChild(child.name, child.transform);
 
         return child;
     }
 
-    void addChild(GameObject child) {
+     void addChild(GameObject child) {
         if (child == null) {
             Log.e("GameObject", "null child in package private method");
             return;
@@ -86,7 +81,7 @@ public class GameObject {
         transform.addChild(child.name, child.transform);
     }
 
-    void update() {
+     void update() {
         // update self
         for (Component component : components)
             component.update();
@@ -96,7 +91,7 @@ public class GameObject {
             entry.getValue().gameObject.update();
     }
 
-    void render(Canvas canvas) {
+     void render(Canvas canvas) {
         // render self
         for (Component component : components)
             component.render(canvas);
@@ -119,23 +114,20 @@ public class GameObject {
         return null;
     }
 
-    public <T extends Component> T getComponent() {
+    public <T extends Component> T getComponent(Class<T> clazz) {
         for (Component component : components)
-            try {
+            if (clazz.isInstance(component))
                 return (T)component;
-            } catch (ClassCastException e) {}
 
         return null;
     }
 
-    public <T extends Component> List<T> getComponents() {
+    public <T extends Component> List<T> getComponents(Class<T> clazz) {
         List<T> output = new LinkedList<>();
 
         for (Component component : components)
-            try {
-                T newel = (T)component;
-                output.add(newel);
-            } catch (ClassCastException e) {}
+            if (clazz.isInstance(component))
+                output.add((T)component);
 
         return output;
     }

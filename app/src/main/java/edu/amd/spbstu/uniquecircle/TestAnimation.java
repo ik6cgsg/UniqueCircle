@@ -1,8 +1,10 @@
 package edu.amd.spbstu.uniquecircle;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import edu.amd.spbstu.uniquecircle.engine.Animation;
+import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.OnTouchEventListener;
 import edu.amd.spbstu.uniquecircle.engine.Transform;
@@ -40,17 +42,18 @@ public class TestAnimation extends Animation implements OnTouchEventListener {
 
     @Override
     protected void animationUpdate(float t) {
-        pos.set(150 + 100 * (float)Math.cos(t * Math.PI * 2),
-                150 + 100 * (float)Math.sin(t * Math.PI * 2));
-        scale.set(0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f,
-                  0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f);
-        scale.multiply(factor);
-        transform.setPosition(pos);
-        transform.setScale(scale);
+//        pos.set(150 + 100 * (float)Math.cos(t * Math.PI * 2),
+//                150 + 100 * (float)Math.sin(t * Math.PI * 2));
+//        scale.set(0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f,
+//                  0.5f + (float)Math.cos(t * Math.PI * 4) / 3.0f);
+//        scale.multiply(factor);
+//        transform.setPosition(pos);
+//        transform.setScale(scale);
     }
 
     @Override
     public void onTouchEvent(float x, float y) {
         Log.d("TestAnimation", "on touch event");
+        getGameObject().getComponent(BitmapRenderer.class).setColor(Color.BLACK);
     }
 }

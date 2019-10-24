@@ -10,7 +10,7 @@ public abstract class Collider extends Component {
         gameObject.getScene().physicsScene.add(this);
     }
 
-    abstract protected boolean checkCollision(float x, float y);
+    abstract protected boolean checkCollision(Vector2D worldPoint);
 
     protected Vector2D world2Local(Vector2D worldPos) throws Exception {
         Transform transform = gameObject.getTransform();

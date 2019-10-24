@@ -7,9 +7,9 @@ import edu.amd.spbstu.uniquecircle.support.Vector2D;
 public class CircleCollider extends Collider {
     private float radiusSq;
 
-    private CircleCollider(GameObject gameObject, float radius) {
+    private CircleCollider(GameObject gameObject, float diameter) {
         super(gameObject);
-        this.radiusSq = radius * radius;
+        setDiameter(diameter);
     }
 
     public static CircleCollider addComponent(GameObject gameObject, float radius) {
@@ -22,13 +22,17 @@ public class CircleCollider extends Collider {
         return new CircleCollider(gameObject, radius);
     }
 
+    public void setDiameter(float diameter) {
+        radiusSq = diameter * diameter / 4;
+    }
+
     @Override
-    protected boolean checkCollision(float x, float y) {
+    protected boolean checkCollision(Vector2D worldPoint) {
         if (radiusSq == 0)
             return false;
 
         try {
-            return world2Local(new Vector2D(x, y)).getLengthSq() <= radiusSq;
+            return world2Local(worldPoint).getLengthSq() <= radiusSq;
         } catch (Exception e) {
             return false;
         }

@@ -70,10 +70,10 @@ public class BitmapRenderer extends Component {
         Vector2D scale = transform.getGlobalScale();
 
         Matrix m = new Matrix();
-        m.setScale(scale.x, scale.y);
+        m.setTranslate(-bitmap.getWidth() / 2.0f, -bitmap.getHeight() / 2.0f);
+        m.postScale(scale.x, scale.y);
         m.postRotate(gameObject.getTransform().getGlobalRotation());
-        m.postTranslate(pos.x - bitmap.getWidth() * scale.x / 2.0f,
-                        pos.y - bitmap.getHeight() * scale.y / 2.0f);
+        m.postTranslate(pos.x, pos.y);
 
         canvas.drawBitmap(bitmap, m, paint);
     }
