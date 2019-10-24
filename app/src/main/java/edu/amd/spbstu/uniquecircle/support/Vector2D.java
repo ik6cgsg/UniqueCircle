@@ -131,14 +131,18 @@ public class Vector2D {
         return new Vector2D(this.x - v.x, this.y - v.y);
     }
 
-    public void multiply(float scalar) {
+    public Vector2D multiply(float scalar) {
         x *= scalar;
         y *= scalar;
+
+        return this;
     }
 
-    public void multiply(Vector2D vector) {
+    public Vector2D multiply(Vector2D vector) {
         x *= vector.x;
         y *= vector.y;
+
+        return this;
     }
 
     public Vector2D getMultiplied(float scalar) {

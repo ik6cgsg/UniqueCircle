@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
+import edu.amd.spbstu.uniquecircle.engine.Animation;
+import edu.amd.spbstu.uniquecircle.engine.BlankAnimation;
 import edu.amd.spbstu.uniquecircle.engine.Component;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
@@ -18,14 +20,18 @@ public class LevelManager extends Component {
     private static final String TAG = "LevelManager";
     private static final float CIRCLE_SCALE = 0.69f;
     private static final int CIRCLE_NUMBER = 6;
+    private static final float TRANSLATE_TIME = 0.69f;
+    private static final float FADEOUT_TIME = 0.69f;
+    private static final float FADEOUT_DIST = 1.2f;
 
+    private boolean needToInit = false;
     private int levelNumber = 1;
     private List<FigureCircle> sideCircles = new ArrayList<>();
     private FigureCircle centerCircle;
     private Random random = new Random();
+    private int correctI;
 
     class GoodClickListener implements EventListener {
-        private static final float TRANSLATE_TIME = 0.30f;
         private GameObject translatedObject;
 
         public void setTranslatedObject(GameObject translatedObject) {
@@ -41,12 +47,22 @@ public class LevelManager extends Component {
     }
 
     private GoodClickListener goodClickListener = new GoodClickListener();
+
     private EventListener badClickListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            // do blank animation and reset level
+            BlankAnimation.addComponent(getGameObject(),
+                    TRANSLATE_TIME).getEndEvent().addListener(resetLevelListener);
+        }
+    };
+
+    private EventListener resetLevelListener = new EventListener() {
         @Override
         public void onEvent() {
             // reset to level 1
             levelNumber = 1;
-            initLevel();
+            needToInit = true;
         }
     };
 
@@ -132,19 +148,33 @@ public class LevelManager extends Component {
         // TODO
 
         // determine correct answer
-        int correct_i = Math.abs(random.nextInt()) % CIRCLE_NUMBER;
+        correctI = Math.abs(random.nextInt()) % CIRCLE_NUMBER;
 
         // set up click event
         for (int i = 0; i < CIRCLE_NUMBER; i++) {
             FigureCircle sideCircle = sideCircles.get(i);
+
+            // restore alpha
+            sideCircle.getFigureRenderer().setAlpha(255);
+            sideCircle.getCircleRenderer().setAlpha(255);
+
             Clickable clickable = Clickable.addComponent(sideCircle.getCircleObject(), true);
             clickable.getOnClickEvent().addListener(new EventListener() {
                 @Override
                 public void onEvent() {
                     removeClickables();
+                    for (int j = 0; j < CIRCLE_NUMBER; j++)
+                        if (j != correctI) {
+                            GameObject circleObject = sideCircles.get(j).getCircleObject();
+
+                            FadeoutAnimation.addComponent(circleObject, FADEOUT_TIME);
+                            TranslateAnimation.addComponent(circleObject,
+                                    circleObject.getTransform().getLocalPosition().multiply(FADEOUT_DIST),
+                                    FADEOUT_TIME);
+                        }
                 }
             });
-            if (i == correct_i) {
+            if (i == correctI) {
                 goodClickListener.setTranslatedObject(sideCircle.getCircleObject());
                 clickable.getOnClickEvent().addListener(goodClickListener);
                 sideCircles.get(i).getFigureRenderer().setColor(Color.GREEN);
@@ -162,6 +192,20 @@ public class LevelManager extends Component {
 
     private void nextLevel() {
         levelNumber++;
-        initLevel();
+        needToInit = true;
+    }
+
+    @Override
+    protected void update() {
+        super.update();
+
+        if (needToInit) {
+            List<Animation> anims;
+            anims = centerCircle.getCircleObject().getComponentsInChildren(Animation.class);
+            if (anims.size() == 0) {
+                initLevel();
+                needToInit = false;
+            }
+        }
     }
 }

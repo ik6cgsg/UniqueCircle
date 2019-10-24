@@ -116,6 +116,21 @@ public class GameObject {
         return output;
     }
 
+    private <T extends Component> void appendComponentsInChildren(Class<T> clazz, List<T> output) {
+        output.addAll(getComponents(clazz));
+
+        for (GameObject child : children)
+            child.appendComponentsInChildren(clazz, output);
+    }
+
+    public <T extends Component> List<T> getComponentsInChildren(Class<T> clazz) {
+        List<T> output = new LinkedList<>();
+
+        appendComponentsInChildren(clazz, output);
+
+        return output;
+    }
+
     public Scene getScene() {
         return scene;
     }

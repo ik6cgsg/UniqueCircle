@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         win.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        // Intent intent = new Intent(this, AppIntro.class);
-        // startActivityForResult(intent, 1);
         // Detect language
         String strLang = Locale.getDefault().getDisplayLanguage();
         if (strLang.equalsIgnoreCase("english")) {
@@ -46,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } else {
             language = App.LANGUAGE_UNKNOWN;
         }
+
         appIntro = new AppIntro(this, language);
         appGame = new AppGame(this, language);
         appActive = appIntro;
         setAppActive(APP_INTRO);
+
         viewGame = new ViewGame(this);
         setContentView(viewGame);
-        setAppActive(APP_GAME);
     }
 
     @Override
