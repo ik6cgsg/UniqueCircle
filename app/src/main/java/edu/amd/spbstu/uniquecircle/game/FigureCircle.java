@@ -34,14 +34,16 @@ public class FigureCircle {
             return null;
         }
 
+        // create main circle
         GameObject circle = parent.addChild(name);
         CircleCollider.addComponent(circle, DIAMETER);
-        Clickable.addComponent(circle);
         Renderer circleRenderer = BitmapRenderer.addComponent(circle, "circle", color);
 
+        // create scaled figure container circle
         GameObject figureContainer = circle.addChild("figureContainer");
         figureContainer.getTransform().setLocalScale(FIGURE_SCALE);
 
+        // create figure
         GameObject figure = figureContainer.addChild("figure");
 
         return new FigureCircle(circle, circleRenderer, figureContainer, figure);
@@ -61,15 +63,15 @@ public class FigureCircle {
         figureRenderer = TextRenderer.addComponent(figure, text, DIAMETER, color);
     }
 
-    public GameObject getCircle() {
+    public GameObject getCircleObject() {
         return circle;
     }
 
-    public GameObject getFigureContainer() {
+    public GameObject getFigureContainerObject() {
         return figureContainer;
     }
 
-    public GameObject getFigure() {
+    public GameObject getFigureObject() {
         return figure;
     }
 

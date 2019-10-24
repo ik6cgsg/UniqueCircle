@@ -31,7 +31,7 @@ public class TestAnimation extends Animation implements OnTouchEventListener {
     private TestAnimation(GameObject gameObject, float scale) {
         super(gameObject, 5, true);
         transform = gameObject.getTransform();
-        addListener(new EventListener() {
+        getEndEvent().addListener(new EventListener() {
             @Override
             public void onEvent() {
                 Log.d("TestAnimation", "End of loop");

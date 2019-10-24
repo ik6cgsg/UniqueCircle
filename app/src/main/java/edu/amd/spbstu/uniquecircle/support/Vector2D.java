@@ -241,6 +241,17 @@ public class Vector2D {
         return new Vector2D(-x, -y);
     }
 
+    public Vector2D lerp(Vector2D v, float t) {
+        x = x * (1 - t) + v.x * t;
+        y = y * (1 - t) + v.y * t;
+
+        return this;
+    }
+
+    public Vector2D getLerp(Vector2D v, float t) {
+        return new Vector2D(this).lerp(v, t);
+    }
+
     @Override
     public Vector2D clone() {
         return new Vector2D(x, y);

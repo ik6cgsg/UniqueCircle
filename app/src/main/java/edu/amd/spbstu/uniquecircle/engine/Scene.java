@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
+import edu.amd.spbstu.uniquecircle.support.event.BaseEvent;
 
 public class Scene {
     private GameObject rootObject;
@@ -74,7 +75,7 @@ public class Scene {
         return rootObject.getChild(name);
     }
 
-    public OnTouchEvent getOnTouchEvent() {
+    public BaseEvent<OnTouchEventListener> getOnTouchEvent() {
         return onTouchEvent;
     }
 }

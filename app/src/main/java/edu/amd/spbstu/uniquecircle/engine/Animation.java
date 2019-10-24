@@ -3,6 +3,7 @@ package edu.amd.spbstu.uniquecircle.engine;
 import java.util.List;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
+import edu.amd.spbstu.uniquecircle.support.event.BaseEvent;
 import edu.amd.spbstu.uniquecircle.support.event.Event;
 import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
@@ -27,12 +28,8 @@ public abstract class Animation extends Component {
         renderer = getGameObject().getComponent(Renderer.class);
     }
 
-    public final void addListener(EventListener newListener) {
-        endEvent.addListener(newListener);
-    }
-
-    public final void addListener(List<EventListener> newListeners) {
-        endEvent.addListener(newListeners);
+    public final BaseEvent<EventListener> getEndEvent() {
+        return endEvent;
     }
 
     protected abstract void animationUpdate(float t);

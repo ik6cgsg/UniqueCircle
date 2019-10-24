@@ -11,6 +11,7 @@ import edu.amd.spbstu.uniquecircle.engine.Component;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
+import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
 public class LevelManager extends Component {
     private int levelNumber = 1;
@@ -18,6 +19,7 @@ public class LevelManager extends Component {
     private FigureCircle centerCircle;
     private static final String TAG = "LevelManager";
     private static final float CIRCLE_SCALE = 0.69f;
+    private static final int CIRCLE_NUMBER = 6;
 
     private enum DistinctFeature {
         COLOR, SHAPE
@@ -43,13 +45,12 @@ public class LevelManager extends Component {
             return null;
         }
         centerCircle.setTextFigureRenderer(String.valueOf(0), Color.WHITE);
-        centerCircle.getCircle().getComponent(Clickable.class).remove();
 
         // create side circles
         List<FigureCircle> sideCircles = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < CIRCLE_NUMBER; i++) {
             String name = "sideCircle".concat(String.valueOf(i));
-            FigureCircle sideCircle = FigureCircle.create(centerCircle.getCircle(), name, Color.GRAY);
+            FigureCircle sideCircle = FigureCircle.create(centerCircle.getCircleObject(), name, Color.GRAY);
             if (sideCircle == null) {
                 Log.e(TAG, "null ".concat(name));
                 return null;
@@ -65,17 +66,17 @@ public class LevelManager extends Component {
     }
 
     private void initLevel() {
-        centerCircle.getCircle().getTransform().setLocalScale(CIRCLE_SCALE);
+        centerCircle.getCircleObject().getTransform().setLocalScale(CIRCLE_SCALE);
 
         // set positions
         Vector2D center = new Vector2D(ViewGame.getScreenWidth() / 2,
                 ViewGame.getScreenHeight() / 2);
-        centerCircle.getCircle().getTransform().setLocalPosition(center);
+        centerCircle.getCircleObject().getTransform().setLocalPosition(center);
 
         Vector2D shift = new Vector2D(0, -ViewGame.getScreenWidth() / 2);
-        float delta = 2.0f * (float)Math.PI / 6.0f;
-        for (int i = 0; i < 6; i++) {
-            sideCircles.get(i).getCircle().getTransform().setLocalPosition(shift);
+        float delta = 2.0f * (float)Math.PI / CIRCLE_NUMBER;
+        for (FigureCircle circle : sideCircles) {
+            circle.getCircleObject().getTransform().setLocalPosition(shift);
             shift.rotateBy(delta);
         }
 
@@ -88,8 +89,37 @@ public class LevelManager extends Component {
 
         // determine correct answer
 
-        // set up touch event
+        // set up click event
+        for (final FigureCircle circle : sideCircles) {
+            Clickable clickable = Clickable.addComponent(circle.getCircleObject(), true);
+            final float SUCK_TIME = 0.30f;
 
+            EventListener suckListener = new EventListener() {
+                @Override
+                public void onEvent() {
+                    // remove all clickables
+                    for (FigureCircle circle : sideCircles) {
+                        Clickable clickable = circle.getCircleObject().getComponent(Clickable.class);
+                        if (clickable != null)
+                            clickable.remove();
+                    }
+
+                    // start translation animation
+                    TranslateAnimation anim = TranslateAnimation.addComponent(circle.getCircleObject(),
+                            new Vector2D(), SUCK_TIME);
+
+                    // next level after translation animation
+                    anim.getEndEvent().addListener(new EventListener() {
+                        @Override
+                        public void onEvent() {
+                            nextLevel();
+                        }
+                    });
+                }
+            };
+
+            clickable.getOnClickEvent().addListener(suckListener);
+        }
 
 
         // eat ass

@@ -3,10 +3,10 @@ package edu.amd.spbstu.uniquecircle.engine;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameObject {
     List<Component> components;
@@ -18,8 +18,8 @@ public class GameObject {
     GameObject(String name, Scene scene) {
         this.name = name;
         this.scene = scene;
-        children = new ArrayList<>();
-        components = new ArrayList<>();
+        children = new CopyOnWriteArrayList<>();
+        components = new CopyOnWriteArrayList<>();
         transform = Transform.addComponent(this);
     }
 
