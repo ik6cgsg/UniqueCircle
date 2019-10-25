@@ -21,32 +21,25 @@ public class LevelManager extends Component {
     private static final float CIRCLE_SCALE = 0.69f;
     private static final int CIRCLE_NUMBER = 6;
     private static final float TRANSLATE_TIME = 0.69f;
+    private static final float FADEIN_TIME = 0.46f;
     private static final float FADEOUT_TIME = 0.69f;
     private static final float FADEOUT_DIST = 1.2f;
 
     private boolean needToInit = false;
     private int levelNumber = 1;
-    private List<FigureCircle> sideCircles = new ArrayList<>();
+    private List<FigureCircle> sideCircles;
     private FigureCircle centerCircle;
     private Random random = new Random();
     private int correctI;
 
-    class GoodClickListener implements EventListener {
-        private GameObject translatedObject;
-
-        public void setTranslatedObject(GameObject translatedObject) {
-            this.translatedObject = translatedObject;
-        }
-
+    private EventListener goodClickListener = new EventListener() {
         @Override
         public void onEvent() {
             // start translation animation and set up next level listener
-            TranslateAnimation.addComponent(translatedObject, new Vector2D(),
-                    TRANSLATE_TIME).getEndEvent().addListener(nextLevelListener);
+            TranslateAnimation.addComponent(sideCircles.get(correctI).getCircleObject(),
+                    new Vector2D(), TRANSLATE_TIME).getEndEvent().addListener(nextLevelListener);
         }
-    }
-
-    private GoodClickListener goodClickListener = new GoodClickListener();
+    };
 
     private EventListener badClickListener = new EventListener() {
         @Override
@@ -54,6 +47,28 @@ public class LevelManager extends Component {
             // do blank animation and reset level
             BlankAnimation.addComponent(getGameObject(),
                     TRANSLATE_TIME).getEndEvent().addListener(resetLevelListener);
+        }
+    };
+
+    private EventListener removeClickablesListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            removeClickables();
+        }
+    };
+
+    private EventListener fadeoutAnimationListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            for (int j = 0; j < CIRCLE_NUMBER; j++)
+                if (j != correctI) {
+                    GameObject circleObject = sideCircles.get(j).getCircleObject();
+
+                    FadeoutAnimation.addComponent(circleObject, FADEOUT_TIME);
+                    TranslateAnimation.addComponent(circleObject,
+                            circleObject.getTransform().getLocalPosition().multiply(FADEOUT_DIST),
+                            FADEOUT_TIME);
+                }
         }
     };
 
@@ -155,37 +170,26 @@ public class LevelManager extends Component {
             FigureCircle sideCircle = sideCircles.get(i);
 
             // restore alpha
-            sideCircle.getFigureRenderer().setAlpha(255);
             sideCircle.getCircleRenderer().setAlpha(255);
+            //sideCircle.getFigureRenderer().setAlpha(255);
+
+            //FadeinAnimation.addComponent(sideCircle.getCircleObject(), FADEIN_TIME);
+            FadeinAnimation.addComponent(sideCircle.getFigureObject(), FADEIN_TIME);
 
             Clickable clickable = Clickable.addComponent(sideCircle.getCircleObject(), true);
-            clickable.getOnClickEvent().addListener(new EventListener() {
-                @Override
-                public void onEvent() {
-                    removeClickables();
-                    for (int j = 0; j < CIRCLE_NUMBER; j++)
-                        if (j != correctI) {
-                            GameObject circleObject = sideCircles.get(j).getCircleObject();
+            clickable.getOnClickEvent().addListener(removeClickablesListener);
+            clickable.getAfterClickEvent().addListener(fadeoutAnimationListener);
 
-                            FadeoutAnimation.addComponent(circleObject, FADEOUT_TIME);
-                            TranslateAnimation.addComponent(circleObject,
-                                    circleObject.getTransform().getLocalPosition().multiply(FADEOUT_DIST),
-                                    FADEOUT_TIME);
-                        }
-                }
-            });
             if (i == correctI) {
-                goodClickListener.setTranslatedObject(sideCircle.getCircleObject());
-                clickable.getOnClickEvent().addListener(goodClickListener);
+                clickable.getAfterClickEvent().addListener(goodClickListener);
                 sideCircles.get(i).getFigureRenderer().setColor(Color.GREEN);
             }
             else {
-                clickable.getOnClickEvent().addListener(badClickListener);
+                clickable.getAfterClickEvent().addListener(badClickListener);
                 sideCircles.get(i).getFigureRenderer().setColor(Color.WHITE);
             }
 
         }
-
 
         // eat ass
     }
@@ -200,6 +204,7 @@ public class LevelManager extends Component {
         super.update();
 
         if (needToInit) {
+            // check that no animations are running
             List<Animation> anims;
             anims = centerCircle.getCircleObject().getComponentsInChildren(Animation.class);
             if (anims.size() == 0) {

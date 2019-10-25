@@ -32,6 +32,6 @@ public class FadeoutAnimation extends Animation {
     @Override
     protected void animationUpdate(float t) {
         for (Renderer renderer : renderers)
-            renderer.setAlpha((int)(255 * (1 - t) * (1 - t) * (1 - t)));
+            renderer.setAlpha((int)(255 * (1 - t) * (1 - t)));
     }
 }

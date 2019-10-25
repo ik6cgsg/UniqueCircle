@@ -11,6 +11,7 @@ import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
 public class Clickable extends Component implements OnTouchEventListener {
     private static final String TAG = "Clickable";
+    private Event afterClickEvent = new Event();
     private Event onClickEvent = new Event();
     private boolean clickableOnce;
 
@@ -31,7 +32,8 @@ public class Clickable extends Component implements OnTouchEventListener {
 
     @Override
     public void onTouchEvent(float x, float y) {
-        ClickAnimation.addComponent(getGameObject()).getEndEvent().addListeners(onClickEvent);
+        onClickEvent.fireEvent();
+        ClickAnimation.addComponent(getGameObject()).getEndEvent().addListeners(afterClickEvent);
         if (clickableOnce)
             remove();
     }
@@ -43,7 +45,11 @@ public class Clickable extends Component implements OnTouchEventListener {
         super.remove();
     }
 
-    public BaseEvent<EventListener> getOnClickEvent() {
+    public BaseEvent<EventListener> getAfterClickEvent() {
+        return afterClickEvent;
+    }
+
+    public Event getOnClickEvent() {
         return onClickEvent;
     }
 
