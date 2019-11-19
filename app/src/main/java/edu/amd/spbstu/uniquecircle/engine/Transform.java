@@ -2,8 +2,9 @@ package edu.amd.spbstu.uniquecircle.engine;
 
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
@@ -18,7 +19,7 @@ public class Transform extends Component {
     private float globalRotation;
 
     private Transform parent;
-    Map<String, Transform> children;
+    List<Transform> children;
 
     public Transform getParent() {
         return parent;
@@ -46,7 +47,7 @@ public class Transform extends Component {
         localPosition = new Vector2D();
         globalPosition = new Vector2D();
 
-        children = new HashMap<>();
+        children = new LinkedList<>();
     }
 
     private void updateGlobalTransform() {
@@ -61,12 +62,12 @@ public class Transform extends Component {
             globalRotation = localRotation;
         }
 
-        for (Map.Entry<String, Transform> entry : children.entrySet())
-            entry.getValue().updateGlobalTransform();
+        for (Transform child : children)
+            child.updateGlobalTransform();
     }
 
-    void addChild(String name, Transform child) {
-        children.put(name, child);
+    void addChild(Transform child) {
+        children.add(child);
         child.parent = this;
         child.updateGlobalTransform();
     }

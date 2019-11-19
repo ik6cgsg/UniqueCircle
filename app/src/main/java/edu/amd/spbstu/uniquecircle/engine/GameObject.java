@@ -50,7 +50,7 @@ public class GameObject {
         GameObject child = new GameObject(name, scene);
 
         children.add(child);
-        transform.addChild(child.name, child.transform);
+        transform.addChild(child.transform);
 
         return child;
     }
@@ -62,7 +62,7 @@ public class GameObject {
         }
 
         children.add(child);
-        transform.addChild(child.name, child.transform);
+        transform.addChild(child.transform);
     }
 
      void update() {
@@ -71,8 +71,8 @@ public class GameObject {
             component.update();
 
         // update children
-        for (Map.Entry<String, Transform> entry : transform.children.entrySet())
-            entry.getValue().gameObject.update();
+        for (Transform child : transform.children)
+            child.gameObject.update();
     }
 
      void render(Canvas canvas) {
@@ -81,18 +81,20 @@ public class GameObject {
             component.render(canvas);
 
         // render children
-        for (Map.Entry<String, Transform> entry : transform.children.entrySet())
-            entry.getValue().gameObject.render(canvas);
+         for (Transform child : transform.children)
+            child.gameObject.render(canvas);
     }
 
     public GameObject getChild(String name) {
-        Transform tmp;
-        if ((tmp = transform.children.get(name)) != null)
-            return tmp.gameObject;
+        // search children
+        for (Transform child : transform.children)
+            if (child.gameObject.getName().equals(name))
+                return child.gameObject;
 
+        // recursive search
         GameObject output;
-        for (Map.Entry<String, Transform> entry : transform.children.entrySet())
-            if ((output = entry.getValue().gameObject.getChild(name)) != null)
+        for (Transform child : transform.children)
+            if ((output = child.gameObject.getChild(name)) != null)
                 return output;
 
         return null;
