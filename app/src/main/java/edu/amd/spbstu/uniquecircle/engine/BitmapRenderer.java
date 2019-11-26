@@ -16,8 +16,9 @@ public class BitmapRenderer extends Renderer {
     private Bitmap bitmap;
     private Activity mainActivity;
     private Matrix m = new Matrix();
+    private String bitmapName;
 
-    private BitmapRenderer(GameObject gameObject, int bitmapId, int color) {
+    private BitmapRenderer(GameObject gameObject, int bitmapId, String bitmapName, int color) {
         super(gameObject);
 
         setColor(color);
@@ -25,6 +26,8 @@ public class BitmapRenderer extends Renderer {
         mainActivity = ViewGame.getMainActivity();
         Resources res = mainActivity.getResources();
         bitmap = BitmapFactory.decodeResource(res, bitmapId);
+
+        this.bitmapName = bitmapName;
     }
 
     public void setBitmap(String bitmapName) {
@@ -37,6 +40,7 @@ public class BitmapRenderer extends Renderer {
             return;
         }
 
+        this.bitmapName = bitmapName;
         Resources res = mainActivity.getResources();
         bitmap = BitmapFactory.decodeResource(res, id);
     }
@@ -62,7 +66,7 @@ public class BitmapRenderer extends Renderer {
             return null;
         }
 
-        return new BitmapRenderer(gameObject, id, color);
+        return new BitmapRenderer(gameObject, id, bitmapName, color);
     }
 
     @Override
@@ -76,5 +80,9 @@ public class BitmapRenderer extends Renderer {
         m.postTranslate(pos.x, pos.y);
 
         canvas.drawBitmap(bitmap, m, paint);
+    }
+
+    public String getBitmapName() {
+        return bitmapName;
     }
 }

@@ -1,6 +1,5 @@
 package edu.amd.spbstu.uniquecircle.game;
 
-import android.graphics.Color;
 import android.util.Log;
 
 import edu.amd.spbstu.uniquecircle.ViewGame;
@@ -11,7 +10,8 @@ import edu.amd.spbstu.uniquecircle.engine.Renderer;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
 
 public class FigureCircle {
-    private static final float DIAMETER = ViewGame.dp2Px(128);
+    private static final int SPRITE_PIXEL_SIZE = 128;
+    private static final float DIAMETER = ViewGame.dp2Px(SPRITE_PIXEL_SIZE);
     private static final String TAG = "FigureCircle";
 
     private GameObject circle;
@@ -19,7 +19,7 @@ public class FigureCircle {
     private GameObject figureContainer;
     private GameObject figure;
     private Renderer figureRenderer;
-    private static final float FIGURE_SCALE = 0.59f;
+    private static final float FIGURE_SCALE = 1f;
 
     private FigureCircle(GameObject circle, Renderer circleRenderer,
                         GameObject figureContainer, GameObject figure) {
@@ -38,7 +38,7 @@ public class FigureCircle {
         // create main circle
         GameObject circle = parent.addChild(name);
         CircleCollider.addComponent(circle, DIAMETER);
-        Renderer circleRenderer = BitmapRenderer.addComponent(circle, "circle", color);
+        Renderer circleRenderer = BitmapRenderer.addComponent(circle, "base", color);
 
         // create scaled figure container circle
         GameObject figureContainer = circle.addChild("figureContainer");
@@ -82,5 +82,9 @@ public class FigureCircle {
 
     public Renderer getFigureRenderer() {
         return figureRenderer;
+    }
+
+    public void remove() {
+        circle.remove();
     }
 }

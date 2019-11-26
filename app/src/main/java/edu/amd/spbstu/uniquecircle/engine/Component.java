@@ -9,6 +9,10 @@ public abstract class Component {
         return gameObject;
     }
 
+    public final Transform getTransform() {
+        return gameObject.getTransform();
+    }
+
     protected Component(GameObject gameObject) {
         this.gameObject = gameObject;
         gameObject.components.add(this);

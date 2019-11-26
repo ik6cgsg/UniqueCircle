@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameObject {
@@ -135,5 +134,21 @@ public class GameObject {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public void remove() {
+        // remove all personal components
+        for (Component component : components)
+            if (component != transform)
+                component.remove();
+
+        // remove self from
+        GameObject parent = getParent();
+        if (parent != null)
+            parent.children.remove(this);
+
+        // recursively remove children
+        for (GameObject child : children)
+            child.remove();
     }
 }
