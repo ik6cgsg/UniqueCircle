@@ -779,6 +779,10 @@ public class AppIntro implements App {
         return true;
     }    // onTouch
 
+    @Override
+    public void onBackPressed() {
+    }
+
     public void update() {}
 }
 

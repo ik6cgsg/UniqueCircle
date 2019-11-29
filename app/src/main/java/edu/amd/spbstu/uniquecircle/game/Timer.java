@@ -2,6 +2,7 @@ package edu.amd.spbstu.uniquecircle.game;
 
 import android.util.Log;
 
+import edu.amd.spbstu.uniquecircle.ViewGame;
 import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.GameObject;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
@@ -34,7 +35,7 @@ public class Timer {
         GameObject text = back.addChild("timer_text");
 
         BitmapRenderer.addComponent(back, BACK_SPRITE_NAME);
-        TextRenderer.addComponent(text, "timer", BACK_SPRITE_WIDTH);
+        TextRenderer.addComponent(text, "timer", ViewGame.dp2Px(BACK_SPRITE_WIDTH) * 0.30f);
         TimerController timerController = TimerController.addComponent(text, endTime);
 
         return new Timer(back, text, timerController);

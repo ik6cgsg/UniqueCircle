@@ -95,6 +95,11 @@ public class ViewGame extends View {
         return app.onTouch(x, y, evtType);
     }
 
+    public void onBackPressed() {
+        App app = mainActivity.getAppActive();
+        app.onBackPressed();
+    }
+
     public void onConfigurationChanged(Configuration confNew) {
         App app = mainActivity.getAppActive();
         if (confNew.orientation == Configuration.ORIENTATION_LANDSCAPE)

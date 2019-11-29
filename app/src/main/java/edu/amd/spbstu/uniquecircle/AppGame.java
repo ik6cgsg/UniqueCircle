@@ -68,6 +68,11 @@ public class AppGame implements App {
     }
 
     @Override
+    public void onBackPressed() {
+        mainActivity.setAppActive(MainActivity.APP_INTRO);
+    }
+
+    @Override
     public void update() {
         scene.update();
     }

@@ -84,33 +84,29 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (appCur == APP_GAME) {
-            // TODO viewGame.onDestroy();
-            splash.setAnimation(null);
-        }
+    public void onBackPressed() {
+        viewGame.onBackPressed();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            // start game
-            setContentView(R.layout.activity_main);
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            RotateAnimation anim = new RotateAnimation(0f, 360f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-            anim.setInterpolator(new LinearInterpolator());
-            anim.setRepeatCount(Animation.INFINITE);
-            anim.setDuration(2000);
-            splash = findViewById(R.id.star);
-            splash.startAnimation(anim);
-        }
-    }
+    //    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            // start game
+//            setContentView(R.layout.activity_main);
+//            Display display = getWindowManager().getDefaultDisplay();
+//            Point size = new Point();
+//            display.getSize(size);
+//            RotateAnimation anim = new RotateAnimation(0f, 360f,
+//                Animation.RELATIVE_TO_SELF, 0.5f,
+//                Animation.RELATIVE_TO_SELF, 0.5f);
+//            anim.setInterpolator(new LinearInterpolator());
+//            anim.setRepeatCount(Animation.INFINITE);
+//            anim.setDuration(2000);
+//            splash = findViewById(R.id.star);
+//            splash.startAnimation(anim);
+//        }
+//    }
 
     public void setAppActive(int appID) {
         if (appCur == appID) {

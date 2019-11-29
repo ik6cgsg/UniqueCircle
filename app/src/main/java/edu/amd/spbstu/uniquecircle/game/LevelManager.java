@@ -337,7 +337,7 @@ public class LevelManager extends Component {
     private int getCircleNumber() {
         final int START_NUM = 3;
         final int MAX_NUM = 9;
-        final int LEVEL_GAP = 10;
+        final int LEVEL_GAP = 5;
 
         return Math.min(MAX_NUM, START_NUM + levelNumber / LEVEL_GAP);
     }
@@ -356,13 +356,13 @@ public class LevelManager extends Component {
     }
 
     private void addDifficultyModifiers() {
-        if (levelNumber < 10)
+        if (levelNumber < 5)
             return;
 
         int modifier;
-        if (levelNumber < 20)
+        if (levelNumber < 10)
             modifier = random.nextInt(2);
-        else if (levelNumber < 30)
+        else if (levelNumber < 15)
             modifier = random.nextInt(3);
         else
             modifier = random.nextInt(4);

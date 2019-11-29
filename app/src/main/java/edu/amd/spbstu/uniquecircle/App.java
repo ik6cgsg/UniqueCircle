@@ -17,5 +17,6 @@ public interface App {
     void drawCanvas(Canvas canvas);
     void onOrientation(int orientation);
     boolean onTouch(int x, int y, int evtType);
+    void onBackPressed();
     void update();
 }
