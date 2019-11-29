@@ -6,7 +6,6 @@ import android.util.SparseIntArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -29,9 +28,10 @@ public class LevelManager extends Component {
     private static final float FADEIN_TIME = 0.46f;
     private static final float FADEOUT_TIME = 0.69f;
     private static final float FADEOUT_DIST = 1.2f;
+    private static final int BLINK_NUM = 2;
+    private static final float TIMER_TIME = 5;
 
     private static final String[] SHAPES = {"circle", "square", "triangle", "moon", "star"};
-            //"quarters", "face"};
     private static final int[] COLORS = {Color.RED, Color.GREEN, Color.BLUE,
                                          Color.YELLOW,  Color.CYAN, Color.MAGENTA};
     private static final Random random = new Random();
@@ -45,9 +45,11 @@ public class LevelManager extends Component {
 
     private boolean needToInit = false;
     private int levelNumber = 1;
+    private int correctI;
+
     private List<FigureCircle> sideCircles;
     private FigureCircle centerCircle;
-    private int correctI;
+    private Timer timer;
 
     private EventListener goodClickListener = new EventListener() {
         @Override
@@ -112,6 +114,24 @@ public class LevelManager extends Component {
         }
     };
 
+    private EventListener stopTimerListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            timer.stop();
+        }
+    };
+
+    private EventListener startLevelListener = new EventListener() {
+        @Override
+        public void onEvent() {
+            // set up figures and click events
+            setFigures();
+
+            // start the timer
+            timer.start();
+        }
+    };
+
     private enum DistinctFeature {
         COLOR, SHAPE
     }
@@ -123,10 +143,11 @@ public class LevelManager extends Component {
     private int wrongColor;
 
     private LevelManager(GameObject gameObject, List<FigureCircle> sideCircles,
-                         FigureCircle centerCircle) {
+                         FigureCircle centerCircle, Timer timer) {
         super(gameObject);
         this.sideCircles = sideCircles;
         this.centerCircle = centerCircle;
+        this.timer = timer;
     }
 
     public static LevelManager addComponent(GameObject gameObject) {
@@ -146,7 +167,13 @@ public class LevelManager extends Component {
 
         // create side circles
         List<FigureCircle> sideCircles = new ArrayList<>();
-        LevelManager levelManager = new LevelManager(gameObject, sideCircles, centerCircle);
+
+        // create timer
+        Timer timer = Timer.create(gameObject, "timer", TIMER_TIME);
+
+        // create level manager
+        LevelManager levelManager = new LevelManager(gameObject, sideCircles, centerCircle, timer);
+        levelManager.setUpTimer();
         levelManager.initLevel();
 
         return levelManager;
@@ -183,15 +210,12 @@ public class LevelManager extends Component {
         }
     }
 
-    private boolean checkUnsolvable() {
+    private boolean checkUnsolvable(int[] index) {
         Map<String, Integer> shapes = new HashMap<>();
         SparseIntArray colors = new SparseIntArray();
         int variations = 0;
 
         for (int i = 0; i < sideCircles.size(); i++) {
-            if (i == correctI)
-            continue;
-
             Renderer renderer = sideCircles.get(i).getFigureRenderer();
             Integer cnt;
 
@@ -223,13 +247,29 @@ public class LevelManager extends Component {
         switch (distinctFeature) {
             case COLOR:
                 for (Map.Entry<String, Integer> entry : shapes.entrySet())
-                    if (entry.getValue() == 1)
-                        return true;
+                    if (entry.getValue() == 1) {
+                        for (int i = 0; i < sideCircles.size(); i++)
+                            if (i != correctI && ((BitmapRenderer)sideCircles.get(i).getFigureRenderer()).getBitmapName().equals(entry.getKey())) {
+                                index[0] = i;
+                                return true;
+                            }
+
+                        Log.d(TAG, "Correct figure was unique");
+                        return false;
+                    }
                 break;
             case SHAPE:
                 for (int color : COLORS)
-                    if (colors.get(color) == 1)
-                        return true;
+                    if (colors.get(color) == 1) {
+                        for (int i = 0; i < sideCircles.size(); i++)
+                            if (i != correctI && sideCircles.get(i).getFigureRenderer().getColor() == color) {
+                                index[0] = i;
+                                return true;
+                            }
+
+                        Log.d(TAG, "Correct figure was unique");
+                        return false;
+                    }
                 break;
         }
 
@@ -238,11 +278,13 @@ public class LevelManager extends Component {
 
     private void fixUnsolvable()
     {
-        if (!checkUnsolvable())
+        int[] index = {0};
+
+        if (!checkUnsolvable(index))
             return;
 
         for (int i = 0; i < sideCircles.size(); i++) {
-            if (i == correctI)
+            if (i == correctI || i == index[0])
                 continue;
 
             switch (distinctFeature) {
@@ -293,7 +335,11 @@ public class LevelManager extends Component {
     }
 
     private int getCircleNumber() {
-        return Math.min(10, 4 + levelNumber / 5);
+        final int START_NUM = 3;
+        final int MAX_NUM = 9;
+        final int LEVEL_GAP = 10;
+
+        return Math.min(MAX_NUM, START_NUM + levelNumber / LEVEL_GAP);
     }
 
     private void addRotationAnimation() {
@@ -336,7 +382,57 @@ public class LevelManager extends Component {
 
     }
 
+    private void setUpTimer() {
+        // set timer listeners
+        timer.getOnTimerEnd().addListener(removeClickablesListener);
+        timer.getOnTimerEnd().addListener(removeAnimationsListener);
+        timer.getOnTimerEnd().addListener(fadeoutAnimationListener);
+        timer.getOnTimerEnd().addListener(badClickListener);
+
+        // set timer position
+        Vector2D position = new Vector2D(ViewGame.getScreenWidth() - ViewGame.dp2Px(128 / 2),
+                                         ViewGame.dp2Px(128 / 2));
+        timer.getGameObject().getTransform().setLocalPosition(position);
+    }
+
+    private void setFigures() {
+        // set up figures and click events
+        for (int i = 0; i < sideCircles.size(); i++) {
+            FigureCircle sideCircle = sideCircles.get(i);
+
+            // set correct and wrong figures
+            setFigure(sideCircle, i == correctI);
+
+            // restore alpha
+            sideCircle.getCircleRenderer().setAlpha(255);
+            //sideCircle.getFigureRenderer().setAlpha(255);
+
+            //FadeinAnimation.addComponent(sideCircle.getCircleObject(), FADEIN_TIME);
+            FadeinAnimation.addComponent(sideCircle.getFigureObject(), FADEIN_TIME);
+
+            Clickable clickable = Clickable.addComponent(sideCircle.getCircleObject(), true);
+            clickable.getOnClickEvent().addListener(removeClickablesListener);
+            clickable.getOnClickEvent().addListener(removeAnimationsListener);
+            clickable.getOnClickEvent().addListener(stopTimerListener);
+            clickable.getAfterClickEvent().addListener(fadeoutAnimationListener);
+
+            if (i == correctI)
+                clickable.getAfterClickEvent().addListener(goodClickListener);
+            else
+                clickable.getAfterClickEvent().addListener(badClickListener);
+        }
+
+        // add difficulty modifiers
+        addDifficultyModifiers();
+
+        // fix unsolvable situations
+        fixUnsolvable();
+    }
+
     private void initLevel() {
+        // reset timer text
+        timer.reset();
+
         // delete old side circles
         for (int i = 0; i < sideCircles.size(); i++)
             sideCircles.get(i).remove();
@@ -359,10 +455,10 @@ public class LevelManager extends Component {
         // update level number in the center
         ((TextRenderer)centerCircle.getFigureRenderer()).setText(String.valueOf(levelNumber));
 
-        // set level scale
+        // set circles scale
         centerCircle.getCircleObject().getTransform().setLocalScale(CIRCLE_SCALE);
 
-        // set positions
+        // set circles positions
         Vector2D center = new Vector2D(ViewGame.getScreenWidth() / 2,
                 ViewGame.getScreenHeight() / 2);
         centerCircle.getCircleObject().getTransform().setLocalPosition(center);
@@ -380,36 +476,10 @@ public class LevelManager extends Component {
         // determine correct answer
         correctI = Math.abs(random.nextInt(sideCircles.size()));
 
-        // set up figures and click events
-        for (int i = 0; i < sideCircles.size(); i++) {
-            FigureCircle sideCircle = sideCircles.get(i);
-
-            // set correct and wrong figures
-            setFigure(sideCircle, i == correctI);
-
-            // restore alpha
-            sideCircle.getCircleRenderer().setAlpha(255);
-            //sideCircle.getFigureRenderer().setAlpha(255);
-
-            //FadeinAnimation.addComponent(sideCircle.getCircleObject(), FADEIN_TIME);
-            FadeinAnimation.addComponent(sideCircle.getFigureObject(), FADEIN_TIME);
-
-            Clickable clickable = Clickable.addComponent(sideCircle.getCircleObject(), true);
-            clickable.getOnClickEvent().addListener(removeClickablesListener);
-            clickable.getOnClickEvent().addListener(removeAnimationsListener);
-            clickable.getAfterClickEvent().addListener(fadeoutAnimationListener);
-
-            if (i == correctI)
-                clickable.getAfterClickEvent().addListener(goodClickListener);
-            else
-                clickable.getAfterClickEvent().addListener(badClickListener);
-        }
-
-        // add difficulty modifiers
-        addDifficultyModifiers();
-
-        // fix unsolvable situations
-        fixUnsolvable();
+        // set blinking animation
+        BlinkingAnimation blink = BlinkingAnimation.addComponent(centerCircle.getFigureObject(),
+                BLINK_NUM, BLINK_NUM, false);
+        blink.getEndEvent().addListener(startLevelListener);
 
         // eat ass
     }
