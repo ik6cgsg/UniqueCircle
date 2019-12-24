@@ -52,7 +52,7 @@ public class TextRenderer extends Renderer {
         // Set the paint for that size.
         paint.setTextSize(desiredTextSize);
 
-        this.pixelWidth = pixelWidth;
+        this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
         this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
     }
 
@@ -70,8 +70,8 @@ public class TextRenderer extends Renderer {
         // Set the paint for that size.
         paint.setTextSize(desiredTextSize);
 
-        this.pixelHeight = pixelHeight;
         this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
+        this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
     }
 
     public void setPixelMaxDimension(float pixelMaxDimension) {
@@ -87,16 +87,11 @@ public class TextRenderer extends Renderer {
         float wSize = testTextSize * pixelMaxDimension / bounds.width();
 
         float desiredTextSize;
-        if (hSize < wSize) {
-            desiredTextSize = hSize;
-            this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
-            this.pixelHeight = pixelMaxDimension;
-        }
-        else {
-            desiredTextSize = wSize;
-            this.pixelWidth = pixelMaxDimension;
-            this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
-        }
+
+        desiredTextSize = Math.min(hSize, wSize);
+
+        this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
+        this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
 
         // Set the paint for that size.
         paint.setTextSize(desiredTextSize);
@@ -117,15 +112,20 @@ public class TextRenderer extends Renderer {
 
     @Override
     protected void render(Canvas canvas) {
+        final float left_shift = 0.1f;
+
         Vector2D pos = transform.getGlobalPosition();
         Vector2D scale = transform.getGlobalScale();
 
-        m.setTranslate(-pixelWidth / 2.0f, pixelHeight / 2.0f);
+        m.setTranslate(-pixelWidth * (0.5f + left_shift), pixelHeight / 2.0f);
         m.postScale(scale.x, scale.y);
         m.postRotate(gameObject.getTransform().getGlobalRotation());
         m.postTranslate(pos.x, pos.y);
 
         canvas.setMatrix(m);
+//        setColor(Color.RED);
+//        canvas.drawRect(0, 0, pixelWidth, -pixelHeight, paint);
+//        setColor(Color.BLACK);
         canvas.drawText(text, 0, 0, paint);
         m.setScale(1, 1);
         canvas.setMatrix(m);

@@ -163,7 +163,7 @@ public class LevelManager extends Component {
             return null;
         }
         centerCircle.setTextFigureRenderer(String.valueOf(0), Color.WHITE);
-        centerCircle.getFigureObject().getTransform().setLocalScale(0.58f);
+        centerCircle.getFigureObject().getTransform().setLocalScale(0.5f);
 
         // create side circles
         List<FigureCircle> sideCircles = new ArrayList<>();
