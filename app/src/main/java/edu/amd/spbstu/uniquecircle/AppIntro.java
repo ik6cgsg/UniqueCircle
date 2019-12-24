@@ -781,6 +781,7 @@ public class AppIntro implements App {
 
     @Override
     public void onBackPressed() {
+        m_ctx.finish();
     }
 
     public void update() {}
