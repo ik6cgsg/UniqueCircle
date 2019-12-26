@@ -11,6 +11,7 @@ import edu.amd.spbstu.uniquecircle.engine.BitmapRenderer;
 import edu.amd.spbstu.uniquecircle.engine.RectangularCollider;
 import edu.amd.spbstu.uniquecircle.engine.Scene;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
+import edu.amd.spbstu.uniquecircle.game.BackgroundRenderer;
 import edu.amd.spbstu.uniquecircle.game.LevelManager;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
@@ -24,7 +25,12 @@ public class AppGame implements App {
         scene = new Scene();
 
         GameObject level = scene.addGameObject("level");
+
+        // add level
         LevelManager.addComponent(level);
+
+        // add background
+        BackgroundRenderer.addComponent(level, "background");
 
 //        GameObject parent = scene.addGameObject("parent");
 //        GameObject child = parent.addChild("child");

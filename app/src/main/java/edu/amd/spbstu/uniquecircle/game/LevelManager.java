@@ -156,6 +156,10 @@ public class LevelManager extends Component {
             return null;
         }
 
+//        // create background
+//        GameObject background = gameObject.addChild("background");
+//        BitmapRenderer.addComponent(background, "base").setRepeatingShader();
+
         // create center circle
         FigureCircle centerCircle = FigureCircle.create(gameObject, "centerCircle", Color.GRAY);
         if (centerCircle == null) {
@@ -449,6 +453,7 @@ public class LevelManager extends Component {
             }
             sideCircles.add(sideCircle);
             sideCircle.setBitmapFigureRenderer("base");
+            sideCircle.getFigureRenderer().setAlpha(0);
             //sideCircle.setTextFigureRenderer(name);
         }
 
@@ -491,8 +496,6 @@ public class LevelManager extends Component {
 
     @Override
     protected void update() {
-        super.update();
-
         if (needToInit) {
             // check that no animations are running
             List<Animation> anims;

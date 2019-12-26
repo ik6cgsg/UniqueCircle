@@ -13,12 +13,12 @@ import edu.amd.spbstu.uniquecircle.ViewGame;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
 public class BitmapRenderer extends Renderer {
-    private Bitmap bitmap;
-    private Activity mainActivity;
-    private Matrix m = new Matrix();
-    private String bitmapName;
+    protected Bitmap bitmap;
+    protected Activity mainActivity;
+    protected Matrix m = new Matrix();
+    protected String bitmapName;
 
-    private BitmapRenderer(GameObject gameObject, int bitmapId, String bitmapName, int color) {
+    protected BitmapRenderer(GameObject gameObject, int bitmapId, String bitmapName, int color) {
         super(gameObject);
 
         setColor(color);
@@ -49,6 +49,12 @@ public class BitmapRenderer extends Renderer {
         return addComponent(gameObject, bitmapName, Color.WHITE);
     }
 
+    static protected int getBitmapId(String bitmapName) {
+        Activity mainActivity = ViewGame.getMainActivity();
+        return mainActivity.getResources().getIdentifier(bitmapName,
+                "drawable", mainActivity.getPackageName());
+    }
+
     static public BitmapRenderer addComponent(GameObject gameObject, String bitmapName, int color) {
         if (gameObject == null) {
             Log.e("BitmapRenderer", "null game object");
@@ -56,10 +62,7 @@ public class BitmapRenderer extends Renderer {
             return null;
         }
 
-        Activity mainActivity = ViewGame.getMainActivity();
-        int id = mainActivity.getResources().getIdentifier(bitmapName,
-                "drawable", mainActivity.getPackageName());
-
+        int id = getBitmapId(bitmapName);
         if (id == 0) {
             Log.e("BitmapRenderer", "bitmap doesn't exist");
 
@@ -71,8 +74,8 @@ public class BitmapRenderer extends Renderer {
 
     @Override
     protected void render(Canvas canvas) {
-        Vector2D pos = transform.getGlobalPosition();
         Vector2D scale = transform.getGlobalScale();
+        Vector2D pos = transform.getGlobalPosition();
 
         m.setTranslate(-bitmap.getWidth() / 2.0f, -bitmap.getHeight() / 2.0f);
         m.postScale(scale.x, scale.y);
