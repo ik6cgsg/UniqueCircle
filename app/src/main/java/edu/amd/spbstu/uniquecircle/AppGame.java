@@ -71,7 +71,7 @@ public class AppGame implements App {
                 text = "Language is unknown";
                 break;
         }
-        TextRenderer.addComponent(tutorial, text, ViewGame.getScreenWidth());
+        TextRenderer.addComponent(tutorial, text, ViewGame.getScreenWidth(), Color.WHITE);
         tutorial.getTransform().setLocalScale(textScale);
 
         // add level
