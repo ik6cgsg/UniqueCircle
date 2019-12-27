@@ -31,36 +31,51 @@ public class AppGame implements App {
         level = scene.addGameObject("level");
 
         // add tutorial
-//        tutorial = level.addChild("tutorial");
-//        tutorial.getTransform().setLocalPosition(new Vector2D(ViewGame.getScreenWidth() / 2,
-//                ViewGame.getScreenHeight() / 2));
-//        final float textScale = 0.5f;
-//        RectangularCollider.addComponent(tutorial, ViewGame.getScreenWidth() / textScale,
-//                ViewGame.getScreenHeight() / textScale);
-//        Clickable.addComponent(tutorial, true).getAfterClickEvent().addListener(new EventListener() {
-//            @Override
-//            public void onEvent() {
-//                LevelManager.addComponent(level);
-//                tutorial.remove();
-//            }
-//        });
+        tutorial = level.addChild("tutorial");
+        tutorial.getTransform().setLocalPosition(new Vector2D(ViewGame.getScreenWidth() / 2,
+                ViewGame.getScreenHeight() / 2));
+        final float textScale = 0.9f;
+        RectangularCollider.addComponent(tutorial, ViewGame.getScreenWidth() / textScale,
+                ViewGame.getScreenHeight() / textScale);
+        Clickable.addComponent(tutorial, true).getAfterClickEvent().addListener(new EventListener() {
+            @Override
+            public void onEvent() {
+                LevelManager.addComponent(level);
+                tutorial.remove();
+            }
+        });
         String text = "";
-//        switch (mainActivity.language) {
-//            case App.LANGUAGE_ENG:
-//                text = "This is tutorial\nIts pretty Long\na\na\na\naa\na\naa\na\naa\na\n\n\na\na\na\n";
-//                break;
-//            case App.LANGUAGE_RUS:
-//                text = "Назад";
-//                break;
-//            case App.LANGUAGE_UNKNOWN:
-//                text = "Language is unknown";
-//                break;
-//        }
-//        TextRenderer.addComponent(tutorial, text, ViewGame.getScreenHeight());
-//        tutorial.getTransform().setLocalScale(textScale);
+        switch (mainActivity.language) {
+            case App.LANGUAGE_ENG:
+                text = "Welcome to \"Unique Circle\"!\n\n" +
+                        "You have 5 seconds to figure out\n" +
+                        "which circle is unique\n" +
+                        "from the others and tap it.\n\n" +
+                        "Be careful, tap the wrong one\n" +
+                        "and you will lose!\n\n" +
+                        "How far can you get?\n\n" +
+                        "Tap to start!";
+                break;
+            case App.LANGUAGE_RUS:
+                text = "Добро пожаловать\n" +
+                        "в \"Уникальный Круг\"!\n\n" +
+                        "У вас есть 5 секунд, чтобы понять\n" +
+                        "какой из кругов отличается от\n" +
+                        "остальных и выбрать его.\n\n" +
+                        "Осторожно, выберите неправильный,\n" +
+                        "и вы проиграете!\n\n" +
+                        "Как далеко вы сможете дойти?\n\n" +
+                        "Нажмите чтобы начать!";
+                break;
+            case App.LANGUAGE_UNKNOWN:
+                text = "Language is unknown";
+                break;
+        }
+        TextRenderer.addComponent(tutorial, text, ViewGame.getScreenWidth());
+        tutorial.getTransform().setLocalScale(textScale);
 
         // add level
-        LevelManager.addComponent(level);
+        //LevelManager.addComponent(level);
 
         // add back button
         GameObject back_button = level.addChild("back_button");
@@ -87,7 +102,6 @@ public class AppGame implements App {
         }
         TextRenderer.addComponent(text_obj, text, ViewGame.dp2Px(128));
         text_obj.getTransform().setLocalScale(0.69f);
-        text_obj.getTransform().setLocalPosition(new Vector2D(ViewGame.dp2Px(5), 0));
 
         // add background
         BackgroundRenderer.addComponent(level, "background");

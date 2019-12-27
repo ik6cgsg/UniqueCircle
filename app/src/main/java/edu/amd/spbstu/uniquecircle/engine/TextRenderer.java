@@ -6,18 +6,29 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.util.LinkedList;
+
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
 public class TextRenderer extends Renderer {
-    private String text;
+    private String[] lines;
     private float pixelWidth;
     private float pixelHeight;
     private Matrix m = new Matrix();
+    private int maxLineLength;
+
+    private void separate2Lines(String text) {
+        lines = text.split("\n");
+
+        maxLineLength = 0;
+        for (String line : lines)
+            maxLineLength = Math.max(maxLineLength, line.length());
+    }
 
     private TextRenderer(GameObject gameObject, String text, float pixelMaxDimension, int color) {
         super(gameObject);
 
-        this.text = text;
+        separate2Lines(text);
         setColor(color);
         setPixelMaxDimension(pixelMaxDimension);
     }
@@ -38,63 +49,33 @@ public class TextRenderer extends Renderer {
         return new TextRenderer(gameObject, text, pixelMaxDimension, color);
     }
 
-    public void setPixelWidth(float pixelWidth) {
-        final float testTextSize = 48f;
-
-        // Get the bounds of the text, using our testTextSize.
-        paint.setTextSize(testTextSize);
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-
-        // Calculate the desired size as a proportion of our testTextSize.
-        float desiredTextSize = testTextSize * pixelWidth / bounds.width();
-
-        // Set the paint for that size.
-        paint.setTextSize(desiredTextSize);
-
-        this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
-        this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
-    }
-
-    public void setPixelHeight(float pixelHeight) {
-        final float testTextSize = 48f;
-
-        // Get the bounds of the text, using our testTextSize.
-        paint.setTextSize(testTextSize);
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-
-        // Calculate the desired size as a proportion of our testTextSize.
-        float desiredTextSize = testTextSize * pixelHeight / bounds.height();
-
-        // Set the paint for that size.
-        paint.setTextSize(desiredTextSize);
-
-        this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
-        this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
-    }
-
     public void setPixelMaxDimension(float pixelMaxDimension) {
+        float minTextSize = 3059111;
+        Rect maxBounds = new Rect();
         final float testTextSize = 48f;
 
-        // Get the bounds of the text, using our testTextSize.
-        paint.setTextSize(testTextSize);
-        Rect bounds = new Rect();
-        paint.getTextBounds(text, 0, text.length(), bounds);
+        for (String line : lines) {
+            // Get the bounds of the text, using our testTextSize.
+            paint.setTextSize(testTextSize);
+            Rect bounds = new Rect();
+            paint.getTextBounds(line, 0, line.length(), bounds);
 
-        // Calculate the desired size as a proportion of our testTextSize.
-        float hSize = testTextSize * pixelMaxDimension / bounds.height();
-        float wSize = testTextSize * pixelMaxDimension / bounds.width();
+            // Calculate the desired size as a proportion of our testTextSize.
+            float hSize = testTextSize * pixelMaxDimension / bounds.height();
+            float wSize = testTextSize * pixelMaxDimension / bounds.width();
+            float lineTextSize = Math.min(hSize, wSize);
 
-        float desiredTextSize;
+            if (lineTextSize < minTextSize) {
+                minTextSize = lineTextSize;
+                maxBounds = bounds;
+            }
+        }
 
-        desiredTextSize = Math.min(hSize, wSize);
-
-        this.pixelWidth = bounds.width() * desiredTextSize / testTextSize;
-        this.pixelHeight = bounds.height() * desiredTextSize / testTextSize;
+        this.pixelWidth = maxBounds.width() * minTextSize / testTextSize;
+        this.pixelHeight = maxBounds.height() * minTextSize / testTextSize;
 
         // Set the paint for that size.
-        paint.setTextSize(desiredTextSize);
+        paint.setTextSize(minTextSize);
     }
 
     public float getPixelWidth() {
@@ -106,18 +87,20 @@ public class TextRenderer extends Renderer {
     }
 
     public void setText(String text) {
-        this.text = text;
+        separate2Lines(text);
         setPixelMaxDimension(Math.max(pixelHeight, pixelWidth));
     }
 
     @Override
     protected void render(Canvas canvas) {
-        final float left_shift = 0.1f;
+        final float LEFT_SHIFT = 0.1f / maxLineLength;
+        final float LINE_SPACING = 5;
 
         Vector2D pos = transform.getGlobalPosition();
         Vector2D scale = transform.getGlobalScale();
 
-        m.setTranslate(-pixelWidth * (0.5f + left_shift), pixelHeight / 2.0f);
+        m.setTranslate(-pixelWidth * (0.5f + LEFT_SHIFT),
+                -(pixelHeight * (lines.length - 2) + LINE_SPACING * (lines.length - 1)) / 2.0f);
         m.postScale(scale.x, scale.y);
         m.postRotate(gameObject.getTransform().getGlobalRotation());
         m.postTranslate(pos.x, pos.y);
@@ -126,7 +109,8 @@ public class TextRenderer extends Renderer {
 //        setColor(Color.RED);
 //        canvas.drawRect(0, 0, pixelWidth, -pixelHeight, paint);
 //        setColor(Color.BLACK);
-        canvas.drawText(text, 0, 0, paint);
+        for (int i = 0; i < lines.length; i++)
+            canvas.drawText(lines[i], 0, (pixelHeight + LINE_SPACING) * i, paint);
         m.setScale(1, 1);
         canvas.setMatrix(m);
     }
