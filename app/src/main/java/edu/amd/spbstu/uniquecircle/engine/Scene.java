@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 import edu.amd.spbstu.uniquecircle.support.event.BaseEvent;
 
 public class Scene {
     private GameObject rootObject;
-    List<Collider> physicsScene = new LinkedList<>();
+    List<Collider> physicsScene = new CopyOnWriteArrayList<>();
     private OnTouchEvent onTouchEvent = new OnTouchEvent();
 
     public Scene() {

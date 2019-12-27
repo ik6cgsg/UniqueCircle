@@ -2,9 +2,8 @@ package edu.amd.spbstu.uniquecircle.engine;
 
 import android.util.Log;
 
-import java.util.Map;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
 
@@ -47,7 +46,7 @@ public class Transform extends Component {
         localPosition = new Vector2D();
         globalPosition = new Vector2D();
 
-        children = new LinkedList<>();
+        children = new CopyOnWriteArrayList<>();
     }
 
     private void updateGlobalTransform() {

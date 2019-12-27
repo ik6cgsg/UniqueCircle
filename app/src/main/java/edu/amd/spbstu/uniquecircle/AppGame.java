@@ -12,39 +12,85 @@ import edu.amd.spbstu.uniquecircle.engine.RectangularCollider;
 import edu.amd.spbstu.uniquecircle.engine.Scene;
 import edu.amd.spbstu.uniquecircle.engine.TextRenderer;
 import edu.amd.spbstu.uniquecircle.game.BackgroundRenderer;
+import edu.amd.spbstu.uniquecircle.game.Clickable;
 import edu.amd.spbstu.uniquecircle.game.LevelManager;
 import edu.amd.spbstu.uniquecircle.support.Vector2D;
+import edu.amd.spbstu.uniquecircle.support.event.EventListener;
 
 public class AppGame implements App {
     private MainActivity mainActivity;
     private int language;
 
     private Scene scene;
+    private GameObject level;
+    private GameObject tutorial;
 
     public void init() {
         scene = new Scene();
 
-        GameObject level = scene.addGameObject("level");
+        level = scene.addGameObject("level");
+
+        // add tutorial
+//        tutorial = level.addChild("tutorial");
+//        tutorial.getTransform().setLocalPosition(new Vector2D(ViewGame.getScreenWidth() / 2,
+//                ViewGame.getScreenHeight() / 2));
+//        final float textScale = 0.5f;
+//        RectangularCollider.addComponent(tutorial, ViewGame.getScreenWidth() / textScale,
+//                ViewGame.getScreenHeight() / textScale);
+//        Clickable.addComponent(tutorial, true).getAfterClickEvent().addListener(new EventListener() {
+//            @Override
+//            public void onEvent() {
+//                LevelManager.addComponent(level);
+//                tutorial.remove();
+//            }
+//        });
+        String text = "";
+//        switch (mainActivity.language) {
+//            case App.LANGUAGE_ENG:
+//                text = "This is tutorial\nIts pretty Long\na\na\na\naa\na\naa\na\naa\na\n\n\na\na\na\n";
+//                break;
+//            case App.LANGUAGE_RUS:
+//                text = "Назад";
+//                break;
+//            case App.LANGUAGE_UNKNOWN:
+//                text = "Language is unknown";
+//                break;
+//        }
+//        TextRenderer.addComponent(tutorial, text, ViewGame.getScreenHeight());
+//        tutorial.getTransform().setLocalScale(textScale);
 
         // add level
         LevelManager.addComponent(level);
 
+        // add back button
+        GameObject back_button = level.addChild("back_button");
+        back_button.getTransform().setLocalPosition(new Vector2D(ViewGame.dp2Px(64), ViewGame.dp2Px(32)));
+        BitmapRenderer.addComponent(back_button, "back_button");
+        RectangularCollider.addComponent(back_button, ViewGame.dp2Px(128), ViewGame.dp2Px(64));
+        Clickable.addComponent(back_button, false).getAfterClickEvent().addListener(new EventListener() {
+            @Override
+            public void onEvent() {
+                onBackPressed();
+            }
+        });
+        GameObject text_obj = back_button.addChild("text");
+        switch (mainActivity.language) {
+            case App.LANGUAGE_ENG:
+                text = "Back";
+                break;
+            case App.LANGUAGE_RUS:
+                text = "Назад";
+                break;
+            case App.LANGUAGE_UNKNOWN:
+                text = "Language is unknown";
+                break;
+        }
+        TextRenderer.addComponent(text_obj, text, ViewGame.dp2Px(128));
+        text_obj.getTransform().setLocalScale(0.69f);
+        text_obj.getTransform().setLocalPosition(new Vector2D(ViewGame.dp2Px(5), 0));
+
         // add background
         BackgroundRenderer.addComponent(level, "background");
-
-//        GameObject parent = scene.addGameObject("parent");
-//        GameObject child = parent.addChild("child");
-//
-//        parent.getTransform().setLocalPosition(new Vector2D(168, 168));
-//        child.getTransform().setLocalPosition(new Vector2D(336, 0));
-//
-//        BitmapRenderer.addComponent(parent, "circle", Color.RED);
-//        TestAnimation.addComponent(parent, 1);
-//        CircleCollider.addComponent(parent, 336);
-//
-//        TextRenderer text = TextRenderer.addComponent(child, "circle", 300, Color.GREEN);
-//        TestAnimation.addComponent(child, 1);
-//        RectangularCollider.addComponent(child, text.getPixelWidth(), text.getPixelHeight());
     }
 
     public AppGame(MainActivity mainActivity, int language) {
