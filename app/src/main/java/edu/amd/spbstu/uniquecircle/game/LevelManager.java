@@ -31,13 +31,52 @@ public class LevelManager extends Component {
     private static final int BLINK_NUM = 2;
     private static final float TIMER_TIME = 5;
 
-    private static final String[] SHAPES = {"circle", "square", "triangle", "moon", "star"};
     private static final int[] COLORS = {Color.RED, Color.GREEN, Color.BLUE,
                                          Color.YELLOW,  Color.CYAN, Color.MAGENTA};
+    private static final String[][] SHAPES = {
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"circle", "square", "triangle", "triangle_empty", "moon",
+                    "moon_empty", "star", "star_many", "star_empty", "sun",
+                    "sun_wiggly", "leaf_1", "leaf_2"},
+            {"triangle", "triangle_empty"},
+            {"moon", "moon_empty"},
+            {"star", "star_many"},
+            {"star", "star_empty"},
+            {"sun", "sun_wiggly"},
+            {"star", "moon"},
+            {"star_many", "sun"},
+            {"moon", "sun"},
+            {"leaf_1", "leaf_2"}
+    };
+
+    private static String[] currentShapes = {};
     private static final Random random = new Random();
 
     private static String getRandomShape() {
-        return SHAPES[random.nextInt(SHAPES.length)];
+        return currentShapes[random.nextInt(currentShapes.length)];
     }
     private static int getRandomColor() {
         return COLORS[random.nextInt(COLORS.length)];
@@ -295,12 +334,12 @@ public class LevelManager extends Component {
                 case COLOR:
                     BitmapRenderer bm_renderer = (BitmapRenderer)sideCircles.get(i).getFigureRenderer();
                     String name = bm_renderer.getBitmapName();
-                    for (int j = 0; j < SHAPES.length; j++)
-                        if (SHAPES[j].equals(name))
+                    for (int j = 0; j < currentShapes.length; j++)
+                        if (currentShapes[j].equals(name))
                             if (j == 0)
-                                bm_renderer.setBitmap(SHAPES[j + 1]);
+                                bm_renderer.setBitmap(currentShapes[j + 1]);
                             else
-                                bm_renderer.setBitmap(SHAPES[j - 1]);
+                                bm_renderer.setBitmap(currentShapes[j - 1]);
                     break;
                 case SHAPE:
                     Renderer renderer = sideCircles.get(i).getFigureRenderer();
@@ -319,6 +358,8 @@ public class LevelManager extends Component {
     }
 
     private void determineDistinctFeature() {
+        currentShapes = SHAPES[random.nextInt(SHAPES.length)];
+
         int index = random.nextInt(DistinctFeature.values().length);
         distinctFeature = DistinctFeature.values()[index];
 
