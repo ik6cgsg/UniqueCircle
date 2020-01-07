@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Unique Circle</string>
-    <string name="unique_circle">Уникальный круг!</string>
+    <string name="app_name">Уникальный Круг</string>
+    <string name="unique_circle">Уникальный Круг!</string>
     <string name="str_amd_url">https://amd.spbstu.ru/</string>
     <string name="str_depth">Кафедра Прикладной Математики</string>
     <string name="str_university1">Санкт-Петербургский Политехнический</string>
